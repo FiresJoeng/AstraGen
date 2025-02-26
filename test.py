@@ -18,8 +18,7 @@ initial_actions = [
 async def main():
     agent = Agent(
         task=f'''
-请你选择第一个搜索结果, 
-然后
+请你选择第一个搜索结果,
 ''',
         initial_actions=initial_actions,
         llm=llm,
