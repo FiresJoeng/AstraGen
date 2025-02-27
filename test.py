@@ -1,6 +1,6 @@
 import asyncio
 from langchain_openai import ChatOpenAI
-from browser_use import Agent, Browser, BrowserConfig
+from browser_use import Agent
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -12,7 +12,7 @@ DeepSeek_V3 = ChatOpenAI(model='deepseek-chat')
 
 async def main():
     default_actions = [
-    {'go_to_url': {'url': qcc_url}}
+    {'go_to_url': {'url': qcc_url, 'delay': 3}}
     ]
     agent = Agent(
         task=f'''
