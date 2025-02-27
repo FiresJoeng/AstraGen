@@ -19,16 +19,15 @@ default_actions = [
     {'go_to_url': {'url': qcc_url}}
 ]
 
-agent = Agent(
+async def main():
+    agent = Agent(
     task=f'''
-点击“其他方式登录”
-''',
+    点击"其他方式登录".
+    ''',
     initial_actions=default_actions,
     llm=DeepSeek_V3,
 )
-
-
-async def main():
-    await agent.run()
+    result = await agent.run()
+    print(result)
 
 asyncio.run(main())
