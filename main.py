@@ -18,3 +18,7 @@ def 填充占位符(替换字典):
 填充占位符(替换字典)
 
 doc.save('output/filled_template.docx')
+
+# for para in doc.paragraphs:
+#     if '{{CompanyName}}' in para.text:
+#         para.text = para.text.replace('{{CompanyName}}', epname)
