@@ -1,27 +1,30 @@
 import asyncio
 from langchain_openai import ChatOpenAI
-from browser_use import Agent
+from browser_use import Agent, Browser, BrowserConfig
 from dotenv import load_dotenv
+
 load_dotenv()
 
 keyword = input('请输入搜索关键词 > ')
-aiqicha_url = f'https://www.aiqicha.com/s?q={keyword}'
+qcc_url = f'https://www.qcc.com/web/search?key={keyword}'
 
+DeepSeek_V3 = ChatOpenAI(model='deepseek-chat')
 
-llm = ChatOpenAI(model='deepseek-chat')
+config = BrowserConfig(
+    headless=False,
+    disable_security=True
+)
 
-initial_actions = [ 
-    {'open_tab': {'url': aiqicha_url}},
-]
+browser = Browser(config=config)
 
 
 async def main():
     agent = Agent(
         task=f'''
-请你选择第一个搜索结果,
+1. 导航到指定网址：{qcc_url}
+2. 识别并点击第一个搜索结果
 ''',
-        initial_actions=initial_actions,
-        llm=llm,
+        llm=DeepSeek_V3,  # 关闭安全防护
     )
     result = await agent.run()
     print(result)
