@@ -10,13 +10,12 @@ qcc_url = f'https://www.qcc.com/web/search?key={keyword}'
 
 DeepSeek_V3 = ChatOpenAI(model='deepseek-chat')
 
-config = BrowserConfig(
+browser_config = BrowserConfig(
     headless=False,
-    disable_security=True
+    disable_security=False
 )
 
-browser = Browser(config=config)
-
+browser = Browser(config = browser_config)
 
 async def main():
     agent = Agent(
@@ -24,9 +23,10 @@ async def main():
 1. 导航到指定网址：{qcc_url}
 2. 识别并点击第一个搜索结果
 ''',
-        llm=DeepSeek_V3,  # 关闭安全防护
+        llm=DeepSeek_V3, 
     )
     result = await agent.run()
     print(result)
+    await browser.close()
 
 asyncio.run(main())
