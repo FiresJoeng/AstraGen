@@ -1,4 +1,5 @@
-echo @off
+@echo off
 title Requitements Installer
 pip install -r requirements.txt
+echo Successfully Installed!
 exit
