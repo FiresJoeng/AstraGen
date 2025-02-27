@@ -3,22 +3,29 @@ import json
 
 template = 'input/template.docx'
 doc = Document(template)
+keyword = None
+
 
 with open('input/template.json', 'r', encoding='utf-8') as f:
-    替换字典 = json.load(f)
+    data_json = json.load(f)
 
-def 填充占位符(替换字典):
+def fill_docx(dict):
+    # 文本处理
     for para in doc.paragraphs:
-        for run in para.runs:
-            for 占位符, 替换值 in 替换字典.items():
-                print(f'已为{占位符}填充{替换值}.')
-                if 占位符 in run.text:
-                    run.text = run.text.replace(占位符, 替换值)
+        for key, value in dict.items():
+            if key in para.text:
+                for run in para.runs:
+                    run.text = run.text.replace(key, value)
 
-填充占位符(替换字典)
+    # 表格处理
+    for table in doc.tables:
+        for row in table.rows:
+            for cell in row.cells:
+                for para in cell.paragraphs:
+                    for key, value in dict.items():
+                        if key in para.text:
+                            for run in para.runs:
+                                run.text = run.text.replace(key, value)
 
-doc.save('output/filled_template.docx')
-
-# for para in doc.paragraphs:
-#     if '{{CompanyName}}' in para.text:
-#         para.text = para.text.replace('{{CompanyName}}', epname)
+fill_docx(data_json)
+doc.save(f'output/XX支行关于{keyword}的贷款申请调查报告.docx')
