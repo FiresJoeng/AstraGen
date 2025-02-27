@@ -1,5 +1,6 @@
 # loan_report
-Bank Loan Report Automation Generator
+Bank Loan Report Automation Generator  
+Require Python 3.11 or above.
 
 #### browser use
 https://youtu.be/jsd8TpzicRQ?si=uQt_29XqZDeqaIOo
