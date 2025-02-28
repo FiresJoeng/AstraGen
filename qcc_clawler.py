@@ -7,33 +7,32 @@ from pydantic import SecretStr
 
 load_dotenv()
 
-keyword = input('请输入搜索关键词 > ')
-qcc_url = f'https://www.qcc.com/web/search?key={keyword}'
-
-default_actions = [
-    {'go_to_url': {'url': qcc_url}}
-]
-
 api_key = os.getenv('DEEPSEEK_API_KEY', '')
 if not api_key:
     raise ValueError('DEEPSEEK_API_KEY is not set')
 
+keyword = input('请输入搜索关键词 > ')
+qcc_url = f'https://www.qcc.com/web/search?key={keyword}'
 
-async def run_search():
+async def qcc_agent():
+
+    default_actions = [
+    {'go_to_url': {'url': qcc_url}},
+    ]
+
     agent = Agent(
         task=(
-            f'1. 前往“{qcc_url}”'
-            '2. 如果弹出登录页，请等待用户扫码登录后跳转新的页面。否则，直接执行第3步'
-            '3. 点击第一个搜索结果'
+            '1. 若提示登录，请将登录二维码保存在screenshots文件夹下'
         ),
+        initial_actions=default_actions,
         llm=ChatOpenAI(
             base_url='https://api.deepseek.com/v1',
             model='deepseek-chat',
             api_key=SecretStr(api_key),
         ),
-        use_vision=False,
+        use_vision=False
     )
 
     await agent.run()
 
-asyncio.run(run_search())
+asyncio.run(qcc_agent())

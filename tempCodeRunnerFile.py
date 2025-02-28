@@ -1,38 +1,38 @@
 import asyncio
 import os
-
-from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
+from browser_use import Agent
+from dotenv import load_dotenv
 from pydantic import SecretStr
 
-from browser_use import Agent
-
-# dotenv
 load_dotenv()
 
 api_key = os.getenv('DEEPSEEK_API_KEY', '')
 if not api_key:
-	raise ValueError('DEEPSEEK_API_KEY is not set')
+    raise ValueError('DEEPSEEK_API_KEY is not set')
 
+keyword = input('请输入搜索关键词 > ')
+qcc_url = f'https://www.qcc.com/web/search?key={keyword}'
 
-async def run_search():
-	agent = Agent(
-		task=(
-			'1. Go to https://www.reddit.com/r/LocalLLaMA '
-			"2. Search for 'browser use' in the search bar"
-			'3. Click on first result'
-			'4. Return the first comment'
-		),
-		llm=ChatOpenAI(
-			base_url='https://api.deepseek.com/v1',
-			model='deepseek-chat',
-			api_key=SecretStr(api_key),
-		),
-		use_vision=False,
-	)
+async def qcc_agent():
 
-	await agent.run()
+    default_actions = [
+    {'go_to_url': {'url': qcc_url}},
+    ]
 
+    agent = Agent(
+        task=(
+            '1. 若提示登录，请将登录二维码保存在screenshots文件夹下'
+        ),
+        initial_actions=default_actions,
+        llm=ChatOpenAI(
+            base_url='https://api.deepseek.com/v1',
+            model='deepseek-chat',
+            api_key=SecretStr(api_key),
+        ),
+        use_vision=False
+    )
 
-if __name__ == '__main__':
-	asyncio.run(run_search())
+    await agent.run()
+
+asyncio.run(qcc_agent())
