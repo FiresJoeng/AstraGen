@@ -10,25 +10,30 @@ load_dotenv()
 keyword = input('请输入搜索关键词 > ')
 qcc_url = f'https://www.qcc.com/web/search?key={keyword}'
 
-DeepSeek_V3 = ChatOpenAI(
-    model='deepseek-chat',
-    api_key=SecretStr(os.getenv('DEEPSEEK_API_KEY')),
-    base_url=os.getenv('DEEPSEEK_BASE_URL')
-)
-
 default_actions = [
     {'go_to_url': {'url': qcc_url}}
 ]
 
-async def main():
-    agent = Agent(
-    task=f'''
-    点击第一个搜索结果.
-    ''',
-    initial_actions=default_actions,
-    llm=DeepSeek_V3,
-)
-    result = await agent.run()
-    print(result)
+api_key = os.getenv('DEEPSEEK_API_KEY', '')
+if not api_key:
+    raise ValueError('DEEPSEEK_API_KEY is not set')
 
-asyncio.run(main())
+
+async def run_search():
+    agent = Agent(
+        task=(
+            f'1. 前往“{qcc_url}”'
+            '2. 如果弹出登录页，请等待用户扫码登录后跳转新的页面。否则，直接执行第3步'
+            '3. 点击第一个搜索结果'
+        ),
+        llm=ChatOpenAI(
+            base_url='https://api.deepseek.com/v1',
+            model='deepseek-chat',
+            api_key=SecretStr(api_key),
+        ),
+        use_vision=False,
+    )
+
+    await agent.run()
+
+asyncio.run(run_search())
