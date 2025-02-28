@@ -1,3 +1,2 @@
 python-docx
-langchain_deepseek
 browser-use
