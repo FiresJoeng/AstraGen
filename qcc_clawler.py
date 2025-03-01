@@ -1,8 +1,7 @@
 import asyncio
 import os
 from langchain_openai import ChatOpenAI
-from browser_use import Agent
-from browser_use.browser.browser import Browser
+from browser_use import Agent, Browser
 from browser_use.browser.context import BrowserContext, BrowserContextConfig
 from dotenv import load_dotenv
 from pydantic import SecretStr
@@ -36,14 +35,11 @@ async def qcc_agent():
         browser_context=BrowserContext(
             config=browser_config, browser=Browser()),
         initial_actions=default_actions,
-        custom_functions={
-            "login": login_page
-        },
         task=(
             '''
-            1. 如果提示需要登录，请调用"login"函数。然后持续等待，直到用户完成登录并使得网页自动跳转，然后再进行下一步。否则，请直接进行下一步。
+            1. 如果提示需要登录，请持续等待，直到用户完成登录并且网页跳转，然后再进行下一步。如果未提示需要登录，请直接进行下一步。
             2. 点击第一条搜索结果。
-            3. 总结该企业的信息。
+            3. 使用"extract_content"方法，将页面中企业的所有信息整理归纳并以json形式导出。
             4. 关闭浏览器。
             '''
         ),
@@ -54,8 +50,7 @@ async def qcc_agent():
         ),
         use_vision=False
     )
-    result = await agent.run()
-    print(result)
+    await agent.run()
 
 
 try:

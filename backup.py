@@ -1,8 +1,7 @@
 import asyncio
 import os
 from langchain_openai import ChatOpenAI
-from browser_use import Agent
-from browser_use.browser.browser import Browser
+from browser_use import Agent, Browser
 from browser_use.browser.context import BrowserContext, BrowserContextConfig
 from dotenv import load_dotenv
 from pydantic import SecretStr
@@ -14,34 +13,34 @@ if not api_key:
     raise ValueError('DEEPSEEK_API_KEY is not set')
 
 keyword = input('请输入搜索关键词 > ')
-qcc_url = f'https://www.qcc.com/web/search?key={keyword}'
+qcc_url = f'https://www.qcc.com/weblogin?back=web%2Fsearch%3Fkey%3D{keyword}'
 
 browser_config = BrowserContextConfig(
-    cookies_file="cookies/cookies.json",
-    browser_window_size={'width': 1280, 'height': 1100},
-    locale='zh-CN',
-    user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36',
+    cookies_file="cookies/cookies.json"
 )
 
 
-async def qcc_agent():
+async def login_page(agent: Agent):
+    screenshot_path = "screenshot/login_page.png"
+    page = agent.browser_context.page
+    await page.screenshot(path=screenshot_path)
+    return screenshot_path
 
+
+async def qcc_agent():
     default_actions = [
         {'go_to_url': {'url': qcc_url}},
     ]
-
     agent = Agent(
         browser_context=BrowserContext(
             config=browser_config, browser=Browser()),
         initial_actions=default_actions,
-        
         task=(
             '''
-            1. 检查当前网页是否存在二维码，若存在，则等待用户扫码跳转新页面，然后执行第2步；若不存在，则直接执行第2步。
-            2. 点击第1条搜索结果。
-            3. 检查当前网页是否存在二维码，若存在，则等待用户扫码跳转新页面，然后执行第4步；若不存在，则直接执行第4步。
-            4. 总结该企业的信息。
-            5. 关闭浏览器。
+            1. 如果提示需要登录，请持续等待，直到用户完成登录并且网页跳转，然后再进行下一步。如果未提示需要登录，请直接进行下一步。
+            2. 点击第一条搜索结果。
+            3. 使用"extract_content"方法，将页面中企业的所有信息整理归纳并以json形式导出。
+            4. 关闭浏览器。
             '''
         ),
         llm=ChatOpenAI(
@@ -51,8 +50,8 @@ async def qcc_agent():
         ),
         use_vision=False
     )
-
     await agent.run()
+
 
 try:
     asyncio.run(qcc_agent())
