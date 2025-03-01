@@ -36,7 +36,6 @@ async def login_page(browser: Browser):
     screenshot_path = "screenshots/login_page.png"
     page = await browser.get_current_page()
     await page.screenshot(path=screenshot_path)
-    return ActionResult(extracted_content=f'已保存截图到 {screenshot_path}')
 
 default_actions = [
     {'go_to_url': {'url': qcc_url}},
@@ -58,9 +57,9 @@ async def qcc_agent():
         controller=browser_controller,
         task=(
             '''
-            1. 如果提示需要登录，请调用"获取登录二维码"函数。之后保持等待，直到用户完成登录并且网页跳转，然后再进行下一步。
+            1. 如果弹出二维码登录窗口，请调用"获取登录二维码"函数。之后持续等待30秒，直到用户完成登录并且网页跳转，然后再进行下一步。
             2. 点击第一条搜索结果。
-            3. 将页面中企业的所有信息整理归纳并以json形式导出。
+            3. 将页面中企业的所有信息整理归纳并以JSON形式导出。
             4. 关闭浏览器。
             '''
         ),
