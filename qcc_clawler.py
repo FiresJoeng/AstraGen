@@ -33,6 +33,8 @@ async def qcc_agent():
     agent = Agent(
         browser_context=BrowserContext(
             config=browser_config, browser=Browser()),
+        initial_actions=default_actions,
+        
         task=(
             '''
             1. 检查当前网页是否存在二维码，若存在，则等待用户扫码跳转新页面，然后执行第2步；若不存在，则直接执行第2步。
@@ -42,7 +44,6 @@ async def qcc_agent():
             5. 关闭浏览器。
             '''
         ),
-        initial_actions=default_actions,
         llm=ChatOpenAI(
             base_url='https://api.deepseek.com/v1',
             model='deepseek-chat',
@@ -53,4 +54,7 @@ async def qcc_agent():
 
     await agent.run()
 
-asyncio.run(qcc_agent())
+try:
+    asyncio.run(qcc_agent())
+except Exception as e:
+    print('Error: ', str(e))
