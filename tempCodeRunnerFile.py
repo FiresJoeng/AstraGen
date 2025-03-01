@@ -4,10 +4,8 @@ from playwright.sync_api import sync_playwright
 with sync_playwright() as p:
     browser = p.chromium.launch(headless=True)
     page = browser.new_page()
-    print('wait...')
+    print('Starting...')
     page.goto("https://qcc.com/login", wait_until="networkidle")
-    print('ready...')
     page.screenshot(path="screenshots/login_page.png", full_page=True)
-    print('fin!')
+    print('Finished!')
     browser.close()
-    print('closed!')
