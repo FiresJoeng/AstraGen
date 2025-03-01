@@ -1,38 +1,13 @@
-import asyncio
-import os
-from langchain_openai import ChatOpenAI
-from browser_use import Agent
-from dotenv import load_dotenv
-from pydantic import SecretStr
+# 截取整个网页的示例（Python版）
+from playwright.sync_api import sync_playwright
 
-load_dotenv()
-
-api_key = os.getenv('DEEPSEEK_API_KEY', '')
-if not api_key:
-    raise ValueError('DEEPSEEK_API_KEY is not set')
-
-keyword = input('请输入搜索关键词 > ')
-qcc_url = f'https://www.qcc.com/web/search?key={keyword}'
-
-async def qcc_agent():
-
-    default_actions = [
-    {'go_to_url': {'url': qcc_url}},
-    ]
-
-    agent = Agent(
-        task=(
-            '1. 若提示登录，请将登录二维码保存在screenshots文件夹下'
-        ),
-        initial_actions=default_actions,
-        llm=ChatOpenAI(
-            base_url='https://api.deepseek.com/v1',
-            model='deepseek-chat',
-            api_key=SecretStr(api_key),
-        ),
-        use_vision=False
-    )
-
-    await agent.run()
-
-asyncio.run(qcc_agent())
+with sync_playwright() as p:
+    browser = p.chromium.launch(headless=False)
+    page = browser.new_page()
+    print('wait...')
+    page.goto("https://qcc.com/login", wait_until="networkidle")
+    print('ready...')
+    page.screenshot(path="screenshots/login_page.png", full_page=True)
+    print('fin!')
+    browser.close()
+    print('closed!')
