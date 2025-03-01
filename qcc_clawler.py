@@ -14,49 +14,49 @@ if not api_key:
     raise ValueError('DEEPSEEK_API_KEY is not set')
 
 keyword = input('请输入搜索关键词 > ')
-qcc_url = f'https://www.qcc.com/web/search?key={keyword}'
+qcc_url = f'https://www.qcc.com/weblogin?back=web%2Fsearch%3Fkey%3D{keyword}'
 
 browser_config = BrowserContextConfig(
-    cookies_file="cookies/cookies.json",
-    browser_window_size={'width': 1280, 'height': 1100},
-    locale='zh-CN',
-    user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36',
+    cookies_file="cookies/cookies.json"
 )
 
 
-async def qcc_agent():
+async def login_page(agent: Agent):
+    screenshot_path = "screenshot/login_page.png"
+    page = agent.browser_context.page
+    await page.screenshot(path=screenshot_path)
+    return screenshot_path
 
+
+async def qcc_agent():
     default_actions = [
         {'go_to_url': {'url': qcc_url}},
     ]
-
     agent = Agent(
-
         browser_context=BrowserContext(
             config=browser_config, browser=Browser()),
-
         initial_actions=default_actions,
-
+        custom_functions={
+            "login": login_page
+        },
         task=(
             '''
-            1. 检查当前网页是否存在二维码，若存在，则等待用户扫码跳转新页面，然后执行第2步；若不存在，则直接执行第2步。
-            2. 点击第1条搜索结果。
-            3. 检查当前网页是否存在二维码，若存在，则等待用户扫码跳转新页面，然后执行第4步；若不存在，则直接执行第4步。
-            4. 总结该企业的信息。
-            5. 关闭浏览器。
+            1. 如果提示需要登录，请调用"login"函数。然后持续等待，直到用户完成登录并使得网页自动跳转，然后再进行下一步。否则，请直接进行下一步。
+            2. 点击第一条搜索结果。
+            3. 总结该企业的信息。
+            4. 关闭浏览器。
             '''
         ),
-
         llm=ChatOpenAI(
             base_url='https://api.deepseek.com/v1',
             model='deepseek-chat',
             api_key=SecretStr(api_key),
         ),
-
         use_vision=False
     )
+    result = await agent.run()
+    print(result)
 
-    await agent.run()
 
 try:
     asyncio.run(qcc_agent())

@@ -5,7 +5,7 @@ import json
 os.makedirs("cookies", exist_ok=True)
 if not os.path.exists("cookies/cookies.json"):
     with open("cookies/cookies.json", "w") as f:
-        json.dump({}, f)
+        json.dump([], f)
 
 with sync_playwright() as p:
     browser = p.chromium.launch(
@@ -19,8 +19,10 @@ with sync_playwright() as p:
     page.goto("https://www.qcc.com/404",
               wait_until="networkidle")
     page.screenshot(path="screenshots/login_page.png", full_page=True)
-    print('Login QRCode Generated. Please rerun the program if it is no longer valid.')
+    print('Login QRCode Generated. Please re-run the program if it is no longer valid.')
     page.wait_for_url("https://www.qcc.com/404", timeout=0)
     print('Finished!')
-    page.context.storage_state(path="cookies/cookies.json")
+    browser_cookies = page.context.cookies()
+    with open("cookies/cookies.json", "w") as f:
+        json.dump(browser_cookies, f)
     browser.close()
