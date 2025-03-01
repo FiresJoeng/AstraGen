@@ -1,7 +1,7 @@
 import asyncio
 import os
 from langchain_openai import ChatOpenAI
-from browser_use import Agent, Browser
+from browser_use import Agent, Browser, Controller, ActionResult
 from browser_use.browser.context import BrowserContext, BrowserContextConfig
 from dotenv import load_dotenv
 from pydantic import SecretStr
@@ -19,12 +19,14 @@ browser_config = BrowserContextConfig(
     cookies_file="cookies/cookies.json"
 )
 
+browser_controller = Controller()
 
-async def login_page(agent: Agent):
-    screenshot_path = "screenshot/login_page.png"
-    page = agent.browser_context.page
+@browser_controller.action("获取登录二维码")
+async def login_page(browser: Browser):
+    screenshot_path = "screenshots/login_page.png"
+    page = await browser.get_current_page()
     await page.screenshot(path=screenshot_path)
-    return screenshot_path
+    return ActionResult(extracted_content=f'已保存截图到 {screenshot_path}')
 
 
 async def qcc_agent():
@@ -35,9 +37,10 @@ async def qcc_agent():
         browser_context=BrowserContext(
             config=browser_config, browser=Browser()),
         initial_actions=default_actions,
+        controller=browser_controller,
         task=(
             '''
-            1. 如果提示需要登录，请持续等待，直到用户完成登录并且网页跳转，然后再进行下一步。如果未提示需要登录，请直接进行下一步。
+            1. 如果提示需要登录，请调用"获取登录二维码"函数。之后保持等待，直到用户完成登录并且网页跳转，然后再进行下一步。
             2. 点击第一条搜索结果。
             3. 使用"extract_content"方法，将页面中企业的所有信息整理归纳并以json形式导出。
             4. 关闭浏览器。
