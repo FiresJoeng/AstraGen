@@ -1,0 +1,244 @@
+{
+  "company_name": "阿里巴巴（中国）网络技术有限公司",
+  "status": "存续",
+  "qichafen": 897,
+  "kechuangfen": 96,
+  "former_names": ["阿里巴巴（杭州）网络技术发展有限公司"],
+  "unified_social_credit_code": "91330100716105852F",
+  "legal_representative": "蒋芳",
+  "associated_companies": 18,
+  "registered_capital": "599594.14455万美元",
+  "establishment_date": "1999-09-09",
+  "phone": "0571-85025188",
+  "email": "gsll@service.alibaba.com",
+  "website": "http://www.alibaba-inc.com",
+  "address": "浙江省杭州市滨江区网商路699号",
+  "industry": "B2B电商",
+  "company_size": "大型",
+  "employee_count": 4827,
+  "introduction": "阿里巴巴（中国）网络技术有限公司，是全球企业间（B2B）电子商务的著名品牌，是全球国际贸易领域内较大、较活跃的网上交易市场和商人社区。阿里巴巴集团经营多元…展开",
+  "group": "阿里巴巴集团",
+  "group_members": 2538,
+  "important_risks": 1335,
+  "products": ["阿里巴巴", "香港交易所 IPO"],
+  "bidding": {
+    "winning_bids": 30,
+    "procurement": 1
+  },
+  "property_clues": {
+    "clues": 999,
+    "estimated_value": "27456"
+  },
+  "equity_penetration": "挖掘深层股权结构",
+  "court_cases": {
+    "upcoming_court_dates": [
+      {
+        "date": "2025-03-19",
+        "case_reason": "著作权权属、侵权纠纷"
+      },
+      {
+        "date": "2025-02-24",
+        "case_reason": "著作权权属、侵权纠纷"
+      },
+      {
+        "date": "2025-03-24",
+        "case_reason": "著作权权属、侵权纠纷"
+      },
+      {
+        "date": "2025-04-01",
+        "case_reason": "侵害商标权纠纷"
+      }
+    ],
+    "new_cases": [
+      {
+        "date": "2025-02-17",
+        "case_reason": "侵害商标权纠纷"
+      }
+    ]
+  },
+  "business_risks": {
+    "own_risks": 343,
+    "associated_risks": 1623,
+    "historical_information": 666,
+    "warning_information": 9545
+  },
+  "deep_risk_analysis": {
+    "debt_credits": 96,
+    "risk_relationships": 643,
+    "contract_breaches": 259,
+    "competitive_risks": 4
+  },
+  "basic_information": {
+    "legal_cases": 999,
+    "business_risks": 22,
+    "business_information": 999,
+    "company_development": 999,
+    "intellectual_property": 533
+  },
+  "historical_information": {
+    "legal_cases": 999,
+    "business_risks": 22,
+    "business_information": 999,
+    "company_development": 999,
+    "intellectual_property": 533
+  },
+  "business_scope": "一般项目：软件开发；软件销售；技术服务、技术开发、技术咨询、技术交流、技术转让、技术推广；网络设备销售；计算机软硬件及辅助设备零售；计算机软硬件及辅助设备批发；非居住房地产租赁；停车场服务；翻译服务；物业管理；业务培训（不含教育培训、职业技能培训等需取得许可的培训）（除依法须经批准的项目外，凭营业执照依法自主开展经营活动）。",
+  "shareholders": [
+    {
+      "name": "淘宝（中国）软件有限公司",
+      "stake": "57.5947%",
+      "investment_date": "2040-09-08",
+      "actual_investment_date": "2023-10-31",
+      "first_stake_date": "2018-11-28",
+      "associated_products": ["淘宝"]
+    },
+    {
+      "name": "浙江天猫技术有限公司",
+      "stake": "35.7470%",
+      "investment_date": "2040-09-08",
+      "actual_investment_date": "2023-10-31",
+      "first_stake_date": "2019-04-08",
+      "associated_products": ["天猫"]
+    },
+    {
+      "name": "阿里巴巴网络中国有限公司",
+      "stake": "6.6583%",
+      "investment_date": "2040-09-08",
+      "actual_investment_date": "2023-10-31",
+      "first_stake_date": "2007-04-30",
+      "associated_products": []
+    }
+  ],
+  "key_personnel": [
+    {
+      "name": "蒋芳",
+      "position": "执行董事兼总经理",
+      "stake": "-",
+      "profile": "详情"
+    },
+    {
+      "name": "冯云乐",
+      "position": "监事",
+      "stake": "-",
+      "profile": "详情"
+    }
+  ],
+  "branches": [
+    {
+      "name": "阿里巴巴（中国）网络技术有限公司青岛分公司",
+      "responsible_person": "王强",
+      "location": "山东省青岛市市南区",
+      "establishment_date": "2010-11-24",
+      "status": "在业"
+    },
+    {
+      "name": "阿里巴巴（中国）网络技术有限公司义乌分公司",
+      "responsible_person": "汪永建",
+      "location": "浙江省金华市义乌市",
+      "establishment_date": "2010-08-18",
+      "status": "注销"
+    },
+    {
+      "name": "阿里巴巴（中国）网络技术有限公司中山分公司",
+      "responsible_person": "王强",
+      "location": "广东省中山市",
+      "establishment_date": "2010-05-07",
+      "status": "存续"
+    },
+    {
+      "name": "阿里巴巴（中国）网络技术有限公司深圳分公司",
+      "responsible_person": "邱宗冰",
+      "location": "广东省深圳市南山区",
+      "establishment_date": "2010-01-15",
+      "status": "存续"
+    },
+    {
+      "name": "阿里巴巴（中国）网络技术有限公司常州分公司",
+      "responsible_person": "刘国海",
+      "location": "江苏省常州市武进区",
+      "establishment_date": "2009-09-10",
+      "status": "存续"
+    },
+    {
+      "name": "阿里巴巴（中国）网络技术有限公司绍兴分公司",
+      "responsible_person": "陈文",
+      "location": "浙江省绍兴市越城区",
+      "establishment_date": "2009-06-12",
+      "status": "注销"
+    },
+    {
+      "name": "阿里巴巴（中国）网络技术有限公司佛山分公司",
+      "responsible_person": "苏东旭",
+      "location": "广东省佛山市禅城区",
+      "establishment_date": "2008-02-29",
+      "status": "注销"
+    },
+    {
+      "name": "阿里巴巴（中国）网络技术有限公司济南分公司",
+      "responsible_person": "刘光俊",
+      "location": "山东省济南市市中区",
+      "establishment_date": "2007-10-23",
+      "status": "注销"
+    },
+    {
+      "name": "阿里巴巴（中国）网络技术有限公司石家庄分公司",
+      "responsible_person": "王强",
+      "location": "河北省石家庄市裕华区",
+      "establishment_date": "2007-10-12",
+      "status": "存续"
+    },
+    {
+      "name": "阿里巴巴（中国）网络技术有限公司天津分公司",
+      "responsible_person": "刘光俊",
+      "location": "天津市红桥区",
+      "establishment_date": "2007-08-17",
+      "status": "注销"
+    }
+  ],
+  "annual_reports": [
+    {
+      "year": "2023",
+      "report_date": "2024-06-06"
+    },
+    {
+      "year": "2022",
+      "report_date": "2023-06-20"
+    },
+    {
+      "year": "2021",
+      "report_date": "2022-06-16"
+    },
+    {
+      "year": "2020",
+      "report_date": "2021-06-04"
+    },
+    {
+      "year": "2019",
+      "report_date": "2020-06-12"
+    },
+    {
+      "year": "2018",
+      "report_date": "2019-05-17"
+    },
+    {
+      "year": "2017",
+      "report_date": "2018-05-25"
+    },
+    {
+      "year": "2016",
+      "report_date": "2017-06-01"
+    },
+    {
+      "year": "2015",
+      "report_date": "2016-06-14"
+    },
+    {
+      "year": "2014",
+      "report_date": "2015-06-25"
+    },
+    {
+      "year": "2013",
+      "report_date": "2014-12-17"
+    }
+  ]
+}

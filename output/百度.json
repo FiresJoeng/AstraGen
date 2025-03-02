@@ -1,0 +1,131 @@
+{
+  "company_name": "百度在线网络技术（北京）有限公司",
+  "status": "存续",
+  "legal_representative": "崔珊珊",
+  "registered_capital": "4520万美元",
+  "establishment_date": "2000-01-18",
+  "unified_social_credit_code": "91110108717743469K",
+  "phone": "010-59928888",
+  "email": "jiangyao@baidu.com",
+  "website": "www.baidu.com",
+  "address": "北京市海淀区上地十街10号百度大厦三层",
+  "industry": "互联网信息服务",
+  "company_size": "大型",
+  "employee_count": "39800 (2023年)",
+  "revenue": "1331.25亿元 (2024年)",
+  "description": "百度是中文搜索引擎、中文网站。百度旗下产品包括：网页搜索、垂直搜索、百度快照、社区产品、框计算、百度云、开发者中心、百度移动、百度推广品牌营销、百度联盟等。",
+  "parent_group": "百度集团",
+  "key_risks": "138",
+  "products": "百度",
+  "ipo": "香港交易所 IPO",
+  "tenders": {
+    "winning_bids": 12,
+    "procurement": 1
+  },
+  "assets_clues": "999+",
+  "equity_structure": "股权穿透图",
+  "recent_activities": [
+    "2025-02-18 授权发明专利，用于辅助学习的台灯、系统和方法",
+    "2025-02-28 授权发明专利，人机交互方法、装置、电子设备及介质",
+    "2025-02-25 百度与YY Live收购事项落定 超110亿回笼资金将用于AI研发",
+    "2025-02-25 公开发明专利，信息处理方法、装置、电子设备及存储介质",
+    "2025-02-25 授权发明专利，视频帧传输方法、装置、电子设备及存储介质",
+    "2025-04-07 新增开庭公告，案由：买卖合同纠纷",
+    "2025-02-21 公开发明专利，文档生成方法、装置、电子设备和介质",
+    "2025-02-21 授权发明专利，设备ID的确定方法和装置",
+    "2025-02-20 新增法院公告-裁判文书公告",
+    "2025-02-18 百度：2024年第四季度营收341亿元人民币 同比下降2%"
+  ],
+  "risks": {
+    "self_risks": 277,
+    "related_risks": 79,
+    "historical_information": 615,
+    "warnings": 479
+  },
+  "financial_data": {
+    "revenue_2024": "1331.25亿",
+    "revenue_2023": "1345.98亿",
+    "revenue_2022": "1236.75亿",
+    "revenue_2021": "1244.93亿",
+    "revenue_2020": "1070.74亿",
+    "revenue_2019": "1074.13亿",
+    "revenue_2018": "1022.77亿",
+    "revenue_2017": "848.09亿",
+    "revenue_2016": "705.49亿",
+    "revenue_2015": "663.82亿",
+    "revenue_2014": "490.52亿",
+    "net_profit_2024": "241.75亿",
+    "net_profit_2023": "215.49亿",
+    "net_profit_2022": "75.34亿",
+    "net_profit_2021": "75.91亿",
+    "net_profit_2020": "190.26亿",
+    "net_profit_2019": "-22.88亿",
+    "net_profit_2018": "225.82亿",
+    "net_profit_2017": "183.01亿",
+    "net_profit_2016": "116.32亿",
+    "net_profit_2015": "336.64亿",
+    "net_profit_2014": "131.87亿"
+  },
+  "branches": [
+    {
+      "name": "百度在线网络技术（北京）有限公司广州分公司",
+      "location": "广东省广州市白云区",
+      "establishment_date": "2022-09-29",
+      "status": "在业"
+    },
+    {
+      "name": "百度在线网络技术（北京）有限公司邯郸分公司",
+      "location": "河北省邯郸市邯山区",
+      "establishment_date": "2021-11-08",
+      "status": "存续"
+    },
+    {
+      "name": "百度在线网络技术（北京）有限公司成都分公司",
+      "location": "四川省成都市简阳市",
+      "establishment_date": "2021-02-24",
+      "status": "存续"
+    },
+    {
+      "name": "百度在线网络技术（北京）有限公司天津和平区分公司",
+      "location": "天津市和平区",
+      "establishment_date": "2019-12-18",
+      "status": "存续"
+    },
+    {
+      "name": "百度在线网络技术（北京）有限公司天津分公司",
+      "location": "天津市武清区",
+      "establishment_date": "2019-12-17",
+      "status": "存续"
+    },
+    {
+      "name": "百度在线网络技术（北京）有限公司上海宝山分公司",
+      "location": "上海市宝山区",
+      "establishment_date": "2019-11-14",
+      "status": "注销"
+    },
+    {
+      "name": "百度在线网络技术（北京）有限公司上海第一分公司",
+      "location": "上海市闵行区",
+      "establishment_date": "2014-08-19",
+      "status": "存续"
+    },
+    {
+      "name": "百度在线网络技术（北京）有限公司上海第二分公司",
+      "location": "上海市浦东新区",
+      "establishment_date": "2014-03-12",
+      "status": "注销"
+    },
+    {
+      "name": "百度在线网络技术（北京）有限公司武汉分公司",
+      "location": "湖北省武汉市洪山区",
+      "establishment_date": "2006-04-17",
+      "status": "注销"
+    },
+    {
+      "name": "百度在线网络技术（北京）有限公司上海软件技术分公司",
+      "location": "上海市嘉定区",
+      "establishment_date": "2005-02-23",
+      "status": "存续"
+    }
+  ]
+}
