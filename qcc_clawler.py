@@ -30,22 +30,42 @@ browser_config = BrowserConfig(
 
 browser_controller = Controller()
 
+DeepSeek_V3 = ChatOpenAI(
+    base_url="https://api.deepseek.com/v1",
+    model="deepseek-chat",
+    api_key=SecretStr(api_key),
+)
 
-@browser_controller.action("获取登录二维码")
+
+@browser_controller.action("获取登录页面")
 async def login_page(browser: Browser):
     screenshot_path = "screenshots/login_page.png"
     page = await browser.get_current_page()
     await page.screenshot(path=screenshot_path)
 
+# 自定义一个 action 用于保存总结内容到文件
+
+
+@browser_controller.action("保存总结到文件")
+async def save_summary(browser: Browser, content: str):
+    output_dir = "output"
+    os.makedirs(output_dir, exist_ok=True)
+    output_file = os.path.join(output_dir, "output.txt")
+    with open(output_file, "w", encoding="utf-8") as f:
+        f.write(content)
+    print(f"内容已保存到 {output_file}")
+
 default_actions = [
     {"go_to_url": {"url": qcc_url}},
 ]
 
-qcc_agent_prompt = '''
-1. 如果网页提示需要登录，请调用"获取登录二维码"函数。之后持续等待30秒，直到用户完成登录并且网页跳转，然后再进行下一步。
+# 在原有任务的基础上，在最后一步调用自定义的保存函数
+agent_prompt_1 = '''
+1. 如果网页提示需要登录，请调用"获取登录页面"函数。之后持续等待30秒，直到用户完成登录并且网页跳转，然后再进行下一步。
 2. 点击第一条搜索结果。
-3. 将页面中企业的所有信息整理归纳并以JSON形式导出。
-4. 关闭浏览器。
+3. 使用"extract_content"操作将页面中企业的所有信息整理归纳并以JSON形式输出。
+4. 调用"保存总结到文件"函数，将上一步的总结内容保存到 output/output.txt。
+5. 关闭浏览器。
 '''
 
 
@@ -53,25 +73,20 @@ async def qcc_agent():
     browser = Browser(config=browser_config)
     browser_context = BrowserContext(browser=browser, config=context_config)
 
-    qcc_agent = Agent(
+    agent_1 = Agent(
         browser_context=browser_context,
         initial_actions=default_actions,
         controller=browser_controller,
-        task=qcc_agent_prompt,
-        llm=ChatOpenAI(
-            base_url="https://api.deepseek.com/v1",
-            model="deepseek-chat",
-            api_key=SecretStr(api_key),
-        ),
+        task=agent_prompt_1,
+        llm=DeepSeek_V3,
         use_vision=False
     )
 
     try:
-        await qcc_agent.run()
+        await agent_1.run()
     finally:
         await browser_context.close()
         await browser.close()
-
 
 try:
     asyncio.run(qcc_agent())
