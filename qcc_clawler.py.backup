@@ -43,9 +43,7 @@ default_actions = [
 
 
 async def qcc_agent():
-    # 使用 BrowserConfig 实例化浏览器
     browser = Browser(config=browser_config)
-    # 创建浏览器上下文时使用预先定义的上下文配置
     browser_context = BrowserContext(browser=browser, config=context_config)
 
     agent = Agent(

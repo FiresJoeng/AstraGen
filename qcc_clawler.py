@@ -41,25 +41,23 @@ default_actions = [
     {"go_to_url": {"url": qcc_url}},
 ]
 
+qcc_agent_prompt = '''
+1. 如果网页提示需要登录，请调用"获取登录二维码"函数。之后持续等待30秒，直到用户完成登录并且网页跳转，然后再进行下一步。
+2. 点击第一条搜索结果。
+3. 将页面中企业的所有信息整理归纳并以JSON形式导出。
+4. 关闭浏览器。
+'''
+
 
 async def qcc_agent():
-    # 使用 BrowserConfig 实例化浏览器
     browser = Browser(config=browser_config)
-    # 创建浏览器上下文时使用预先定义的上下文配置
     browser_context = BrowserContext(browser=browser, config=context_config)
 
-    agent = Agent(
+    qcc_agent = Agent(
         browser_context=browser_context,
         initial_actions=default_actions,
         controller=browser_controller,
-        task=(
-            '''
-            1. 如果网页提示需要登录，请调用"获取登录二维码"函数。之后持续等待30秒，直到用户完成登录并且网页跳转，然后再进行下一步。
-            2. 点击第一条搜索结果。
-            3. 将页面中企业的所有信息整理归纳并以JSON形式导出。
-            4. 关闭浏览器。
-            '''
-        ),
+        task=qcc_agent_prompt,
         llm=ChatOpenAI(
             base_url="https://api.deepseek.com/v1",
             model="deepseek-chat",
@@ -69,7 +67,7 @@ async def qcc_agent():
     )
 
     try:
-        await agent.run()
+        await qcc_agent.run()
     finally:
         await browser_context.close()
         await browser.close()
