@@ -1,22 +1,76 @@
 {
-        "{{CompanyName}}": "杭州幻方科技有限公司",
-        "{{legal_representative}}": "徐进",
-        "{{RegisteredAddress}}": "浙江省杭州市下城区环城北路169号汇金国际大厦西1幢1401室",
-        "{{ActualOfficeAddress}}": "浙江省杭州市下城区环城北路169号汇金国际大厦西1幢1401室",
-        "{{EstablishmentDate}}": "2018年1月8日",
-        "{{RegisteredCapital}}": "100万(元)",
-        "{{PaidInCapital}}": "99万(元)",
-        "{{BasicAccountBank}}": "未提供",
-        "{{CompanyType}}": "有限责任公司",
-        "{{Industry}}": "科技推广和应用服务业",
-        "{{BusinessScope}}": "网络技术、通信技术、计算机软硬件、电子产品、信息技术的技术开发、技术咨询、技术服务、成果转让；计算机系统集成；销售：计算机软硬件、电子产品、日用百货",
-        "{{ShareholderInfo}}": "宁波少广创业投资合伙企业（有限合伙） 99%，郑达 1%",
-        "{{ActualController}}": "未提供",
-        "{{IDNumber}}": "未提供",
-        "{{Experience}}": "未提供",
-        "{{CapitalStatus}}": "资本金已全部到位，股东按认缴比例完成实缴。",
-        "{{ManagementPersonnel}}": "1、宁波少广创业投资合伙企业（有限合伙）：注册资本：20,200万(元)；实收资本：；股权结构：梁文锋持股54.61%，徐进、王晨、郑达各持股10.92%，陈哲持股6.63%，宁波程采企业管理咨询合伙企业持股0.50495%，宋瑞丽、李橙、梁键、胡冰冰各持股0.5%；主营业务：创业投资；上年末资产规模：未知；收入规模：未知；盈利情况：未知。",
-        "{{CorporateGovernance}}": "组织架构：1、徐进，执行董事兼总经理。2、郑达，监事。\n        内部控制：信息未提供.\n        人力资源：信息未提供。",
-        "{{HistoricalEvolution}}": "1、2018年1月31日：\n投资人变更：从浙江九章资产管理有限公司变更为徐进*、郑达、陈哲、梁文锋。\n市场主体类型变更：从一人有限责任公司（私营法人独资）变更为私营有限责任公司（自然人控股或私营性质企业控股）。\n2、2019年1月21日：\n投资人变更：投资人调整为郑达、陈哲、梁文锋。\n经营范围变更：经营范围措辞有所调整，但基本内容不变。\n3、2019年7月22日：\n投资人变更：投资人调整为郑达、梁文锋，企业名称变更为宁波少广创业投资合伙企业（有限合伙）。\n4、2019年12月20日：\n其他事项备案：从下城局变更为长庆市监所。\n地址变更：从萧山区宁围街道变更为下城区环城北路汇金国际大厦。",
-        "{{DevelopmentQualification}}": "未知资质（无固定期限）。"
-}
+        "company_name": "杭州幻方科技有限公司",
+        "status": "存续",
+        "credit_score": 1050,
+        "tech_score": 80,
+        "rating": "良好",
+        "report": "良好",
+        "update_date": "2天前",
+        "unified_social_credit_code": "91330109MA2B07BR02",
+        "legal_representative": {
+          "name": "徐进",
+          "associated_companies": 14
+        },
+        "registered_capital": "100万元",
+        "established_date": "2018-01-08",
+        "phone": "0571-85377238",
+        "email": "info@high-flyer.cn",
+        "website": "https://www.high-flyer.cn",
+        "address": "浙江省杭州市下城区环城北路169号汇金国际大厦西1幢1401室",
+        "industry": "通信配套服务",
+        "company_size": "中型",
+        "employee_count": 20,
+        "description": "杭州幻方科技有限公司，于2015年06月11日在杭州市下城区市场监督管理局登记成立，法定代表人徐进，经营范围包括一般经营项目：网络技术、通信技术、计算机软硬件服务…展开",
+        "business_scope": "网络技术、通信技术、计算机软硬件、电子产品、信息技术的技术开发、技术咨询、技术服务、成果转让；计算机系统集成；销售：计算机软硬件、电子产品、日用百货（依法须经批准的项目，经相关部门批准后方可开展经营活动）",
+        "shareholders": [
+          {
+            "name": "宁波少广创业投资合伙企业（有限合伙）",
+            "stake": "99.00%",
+            "investment_date": "2037-12-31",
+            "initial_stake_date": "2019-01-21"
+          },
+          {
+            "name": "郑达韡",
+            "stake": "1.00%",
+            "investment_date": "2037-12-31",
+            "initial_stake_date": "2018-01-31"
+          }
+        ],
+        "key_personnel": [
+          {
+            "name": "徐进",
+            "position": "执行董事兼总经理"
+          },
+          {
+            "name": "郑达韡",
+            "position": "监事",
+            "stake": "1.00%"
+          }
+        ],
+        "annual_reports": [
+          {
+            "year": 2023,
+            "report_date": "2024-04-25"
+          },
+          {
+            "year": 2022,
+            "report_date": "2023-05-25"
+          },
+          {
+            "year": 2021,
+            "report_date": "2022-05-27"
+          },
+          {
+            "year": 2020,
+            "report_date": "2021-05-21"
+          },
+          {
+            "year": 2019,
+            "report_date": "2020-05-13"
+          },
+          {
+            "year": 2018,
+            "report_date": "2019-05-31"
+          }
+        ]
+      }
