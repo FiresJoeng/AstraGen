@@ -38,21 +38,24 @@ browser_config = BrowserConfig(
 browser_controller = Controller()
 
 
-@browser_controller.action("获取登录页")
+@browser_controller.action("获取登录页面")
 async def login_page(browser: Browser):
     screenshot_path = "screenshots/login_page.png"
     page = await browser.get_current_page()
     await page.screenshot(path=screenshot_path)
+    feedback_msg = f"[Function] Successfully Saved to {screenshot_path}."
+    print(feedback_msg)
+    return feedback_msg
 
 
-@browser_controller.action("保存到文件")
-async def save_extract(browser: Browser, content: str):
+@browser_controller.action("保存企业信息")
+async def extract_json(browser: Browser, content: str):
     output_dir = "output"
     os.makedirs(output_dir, exist_ok=True)
-    extract_json = os.path.join(output_dir, f"{keyword}.json")
-    with open(extract_json, "w", encoding="utf-8") as f:
+    extract_path = os.path.join(output_dir, f"{keyword}.json")
+    with open(extract_path, "w", encoding="utf-8") as f:
         f.write(content)
-    feedback_msg = f"内容已保存到 {extract_json}"
+    feedback_msg = f"[Function] Successfully Saved to {extract_path}."
     print(feedback_msg)
     return feedback_msg
 
@@ -61,11 +64,11 @@ default_actions = [
 ]
 
 qcc_agent_prompt = f'''
-1. 如果网页提示需要登录，请调用"获取登录页"函数。如果网页不需要登录，请直接跳到第3步。
-2. 之后请等待30秒，直到用户完成登录并且网页跳转，再继续下一步。
+1. 如果网页提示需要登录，请调用"login_page"（获取登录页）函数。如果网页不需要登录，请直接跳到第3步。
+2. 之后重复等待30秒，直到用户完成登录并且网页跳转，再继续下一步。
 3. 请点击第一条搜索结果。
 4. 请总结页面中该企业的所有信息，整理归纳为JSON形式输出。
-5. 调用"保存到文件"函数。注意：只调用一次，然后立即继续下一步！
+5. 调用"extract_json"（保存企业信息）函数。注意：只调用一次，然后立即继续下一步！
 6. 关闭浏览器。
 '''
 

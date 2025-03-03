@@ -1,0 +1,113 @@
+{
+    "company_name": "深圳市大疆创新科技有限公司",
+    "status": "存续",
+    "unified_social_credit_code": "914403007954257495",
+    "legal_representative": "罗镇华",
+    "registered_capital": "3000万元",
+    "establishment_date": "2006-11-06",
+    "phone": "135",
+    "email": "admin@dji.com",
+    "website": "https://www.dji.com/cn/company",
+    "address": "深圳市南山区西丽街道西丽社区仙元路53号大疆天空之城T2大堂",
+    "industry": "航空器制造",
+    "company_size": "大型",
+    "employee_count": "4785 (2023年)",
+    "business_scope": "航空电子设备、自动控制设备、无人驾驶航空器、无线电数据传输系统、电子元器件、计算机软件的生产（由分公司经营）及其应用的技术开发、批发、进出口及相关配套业务（不涉及国营贸易管理商品，涉及配额、许可证管理及其他专项规定管理的商品，按国家有关规定办理申请）；软件技术信息咨询；教育信息咨询。智能机器人的研发；机械设备研发。（除依法须经批准的项目外，凭营业执照依法自主开展经营活动）",
+    "main_personnel": [
+        {
+            "name": "汪滔",
+            "position": "董事长"
+        },
+        {
+            "name": "陆地",
+            "position": "副董事长"
+        },
+        {
+            "name": "王菂",
+            "position": "董事"
+        }
+    ],
+    "branches": [
+        {
+            "name": "深圳市大疆创新科技有限公司上海分公司",
+            "status": "注销"
+        },
+        {
+            "name": "深圳市大疆创新科技有限公司威新分公司",
+            "status": "注销"
+        },
+        {
+            "name": "深圳市大疆创新科技有限公司南山分公司",
+            "status": "存续"
+        },
+        {
+            "name": "深圳市大疆创新科技有限公司粤海分公司",
+            "status": "注销"
+        },
+        {
+            "name": "深圳市大疆创新科技有限公司科技园分公司",
+            "status": "注销"
+        }
+    ],
+    "annual_reports": [
+        {
+            "year": "2023",
+            "report_date": "2024-06-05"
+        },
+        {
+            "year": "2022",
+            "report_date": "2023-05-05"
+        },
+        {
+            "year": "2021",
+            "report_date": "2022-05-20"
+        },
+        {
+            "year": "2020",
+            "report_date": "2021-05-25"
+        },
+        {
+            "year": "2019",
+            "report_date": "2020-06-15"
+        },
+        {
+            "year": "2018",
+            "report_date": "2019-05-21"
+        },
+        {
+            "year": "2017",
+            "report_date": "2018-06-03"
+        },
+        {
+            "year": "2016",
+            "report_date": "2017-03-27"
+        },
+        {
+            "year": "2015",
+            "report_date": "2016-04-20"
+        },
+        {
+            "year": "2014",
+            "report_date": "2015-05-07"
+        },
+        {
+            "year": "2013",
+            "report_date": "2014-04-20"
+        }
+    ],
+    "intellectual_property": {
+        "patents": "999+",
+        "trademarks": "790",
+        "copyrights": "77"
+    },
+    "legal_cases": {
+        "total": "299",
+        "judicial_cases": "280",
+        "court_announcements": "194"
+    },
+    "risk_information": {
+        "self_risks": "36",
+        "associated_risks": "24",
+        "historical_information": "93"
+    }
+}
