@@ -22,8 +22,6 @@ else:
 class CustomMsgBox(QMessageBox):
     def __init__(self, parent=None):
         super().__init__(parent)
-        # 移除标题栏，使消息框无边框
-        self.setWindowFlags(Qt.Dialog | Qt.FramelessWindowHint)
         self.setStyleSheet("background-color: white; color: black;")
         self.setStandardButtons(QMessageBox.Close)
         self.button(QMessageBox.Close).setText("好的")
@@ -31,18 +29,16 @@ class CustomMsgBox(QMessageBox):
             "min-width: 60px; border: 1px solid gray; border-radius: 1px;"
         )
 
+    # 窗口拖动
     def mousePressEvent(self, event):
-        """记录鼠标按下时窗口的位置偏移，用于拖动窗口"""
         if event.button() == Qt.LeftButton:
             self._offset = event.globalPos() - self.pos()
 
     def mouseMoveEvent(self, event):
-        """根据鼠标移动更新窗口位置，实现窗口拖动效果"""
         if self._offset is not None and event.buttons() == Qt.LeftButton:
             self.move(event.globalPos() - self._offset)
 
     def mouseReleaseEvent(self, event):
-        """重置窗口拖动偏移量"""
         if event.button() == Qt.LeftButton:
             self._offset = None
 
@@ -125,7 +121,7 @@ class UI(QWidget):
         self.setWindowTitle('AstraGen 星核')
         self.setFixedSize(400, 150)
         self.setStyleSheet("background-color: black;")
-        self.setWindowOpacity(0.70)
+        self.setWindowOpacity(0.75)
         self.center()
         self._offset = None
 
@@ -177,23 +173,21 @@ class UI(QWidget):
             msg = CustomMsgBox(self)
             msg.setIcon(QMessageBox.Critical)
             msg.setWindowTitle("Error!")
-            msg.setText("该项不能为空")
+            msg.setText("非法的输入内容!")
             msg.show()
         else:
             print(f"API KEY: {api_key}")
 
+    # 窗口拖动
     def mousePressEvent(self, event):
-        """记录鼠标按下时窗口的位置偏移，用于拖动窗口"""
         if event.button() == Qt.LeftButton:
             self._offset = event.globalPos() - self.pos()
 
     def mouseMoveEvent(self, event):
-        """根据鼠标移动更新窗口位置，实现窗口拖动效果"""
         if self._offset is not None and event.buttons() == Qt.LeftButton:
             self.move(event.globalPos() - self._offset)
 
     def mouseReleaseEvent(self, event):
-        """重置窗口拖动偏移量"""
         if event.button() == Qt.LeftButton:
             self._offset = None
 
