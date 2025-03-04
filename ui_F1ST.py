@@ -22,8 +22,11 @@ class CustomMsgBox(QMessageBox):
         super().__init__(parent)
         # 设置白色背景和黑色文本
         self.setStyleSheet("background-color: white; color: black;")
-        # 移除默认的 OK 按钮
-        self.setStandardButtons(QMessageBox.NoButton)
+        self.setStandardButtons(QMessageBox.Close)
+        self.button(QMessageBox.Close).setText("好的")
+        self.button(QMessageBox.Close).setStyleSheet(
+            "min-width: 60px; border: 1px solid gray; border-radius: 1px;"
+        )
 
 
 class CustomLineEdit(QLineEdit):
