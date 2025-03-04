@@ -61,13 +61,3 @@ def generate_report(keyword, template='input/template.docx', output_dir='output'
     fill_docx(template, fill_data, output_path)
 
     return output_path
-
-
-# 如果直接运行本模块，则执行简单的测试逻辑
-if __name__ == '__main__':
-    test_keyword = "测试"  # Test file
-    try:
-        result_path = generate_report(test_keyword)
-        print(f"[Error] 报告生成成功，保存路径：{result_path}")
-    except Exception as e:
-        print(f"[Error] 生成报告时发生错误：{e}")
