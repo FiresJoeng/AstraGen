@@ -19,6 +19,12 @@ DeepSeek_V3 = ChatOpenAI(
     api_key=SecretStr(deepseek_api_key),
 )
 
+DeepSeek_R1 = ChatOpenAI(
+    base_url="https://api.deepseek.com/v1",
+    model="deepseek-reasoner",
+    api_key=SecretStr(deepseek_api_key),
+)
+
 # 定义浏览器上下文配置
 context_config = BrowserContextConfig(
     cookies_file="cookies/cookies.json",
