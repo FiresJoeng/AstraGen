@@ -4,15 +4,26 @@ from PyQt5.QtWidgets import (
     QLineEdit, QMessageBox, QDesktopWidget
 )
 from PyQt5.QtGui import QFont, QFontDatabase
-from PyQt5.QtCore import Qt, QPoint
+from PyQt5.QtCore import Qt
 
+# 创建全局 QApplication 对象
 app = QApplication(sys.argv)
 font_id = QFontDatabase.addApplicationFont("fonts/SarasaMonoSC-Light.ttf")
 if font_id != -1:
     font_family = QFontDatabase.applicationFontFamilies(font_id)[0]
     app.setFont(QFont(font_family))
 else:
-    print("加载自定义字体失败！")
+    print("[Error] 加载自定义字体失败！")
+    font_family = "Arial"  # 如果加载失败则使用系统默认字体
+
+
+class CustomMsgBox(QMessageBox):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        # 设置白色背景和黑色文本
+        self.setStyleSheet("background-color: white; color: black;")
+        # 移除默认的 OK 按钮
+        self.setStandardButtons(QMessageBox.NoButton)
 
 
 class CustomLineEdit(QLineEdit):
@@ -98,13 +109,12 @@ class UI(QWidget):
         self.welcome_label.setStyleSheet("color: white;")
         self.welcome_label.setGeometry(100, 35, 200, 30)
 
-        self.exit_button = QPushButton('[->', self)
-        self.exit_button.setGeometry(350, 10, 50, 25)
+        self.exit_button = QPushButton('×', self)
+        self.exit_button.setGeometry(350, 10, 30, 25)
         self.exit_button.setStyleSheet("""
             background-color: transparent;
             color: white;
             border: none;
-            border-radius: 5px;
         """)
         self.exit_button.clicked.connect(QApplication.instance().quit)
 
@@ -130,7 +140,11 @@ class UI(QWidget):
     def on_search(self):
         api_key = self.search_entry.text()
         if not api_key.strip():
-            QMessageBox.warning(self, "Error!", "请输入有效的API Key")
+            msg = CustomMsgBox(self)
+            msg.setIcon(QMessageBox.Critical)
+            msg.setWindowTitle("Error!")
+            msg.setText("该项不能为空")
+            msg.show()
         else:
             print(f"API Key: {api_key}")
 
