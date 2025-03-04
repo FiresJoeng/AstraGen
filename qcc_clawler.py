@@ -11,7 +11,7 @@ load_dotenv()
 # 获取 DEEPSEEK_API_KEY
 deepseek_api_key = os.getenv("DEEPSEEK_API_KEY", "")
 if not deepseek_api_key:
-    raise ValueError('请先在 ".env" 文件内设置 "DEEPSEEK_API_KEY"')
+    raise ValueError('[Error] 请先在 ".env" 文件内设置 "DEEPSEEK_API_KEY"')
 
 DeepSeek_V3 = ChatOpenAI(
     base_url="https://api.deepseek.com/v1",
@@ -34,12 +34,9 @@ browser_config = BrowserConfig(
 
 
 def create_qcc_agent(keyword: str) -> Agent:
-    """
-    根据搜索关键词创建 Agent 实例
-    """
     keyword = keyword.strip()
     if not keyword:
-        raise ValueError("搜索关键词不能为空！")
+        raise ValueError("[Error] 搜索关键词不能为空！")
     qcc_url = f"https://www.qcc.com/weblogin?back=web%2Fsearch%3Fkey%3D{keyword}"
     default_actions = [{"go_to_url": {"url": qcc_url}}]
     qcc_agent_prompt = f'''
@@ -68,7 +65,7 @@ def create_qcc_agent(keyword: str) -> Agent:
             print(feedback_msg)
             return feedback_msg
         except Exception as e:
-            error_msg = f"[Function] 获取登录页面失败: {str(e)}"
+            error_msg = f"[Error] 获取登录页面失败: {str(e)}"
             print(error_msg)
             raise
 
@@ -84,7 +81,7 @@ def create_qcc_agent(keyword: str) -> Agent:
             print(feedback_msg)
             return feedback_msg
         except Exception as e:
-            error_msg = f"[Function] 保存企业信息失败: {str(e)}"
+            error_msg = f"[Error] 保存企业信息失败: {str(e)}"
             print(error_msg)
             raise
 
@@ -109,21 +106,21 @@ async def run_agent(keyword: str):
     try:
         await qcc_agent.run()
     except Exception as e:
-        print("Agent 运行出现异常:", str(e))
+        print("[Error] qcc_agent 运行出现异常:", str(e))
         raise
     finally:
         try:
             await qcc_agent.browser_context.close()
             await qcc_agent.browser_context.browser.close()
         except Exception as e:
-            print("关闭浏览器时发生错误:", str(e))
+            print("[Error] 关闭浏览器时发生错误:", str(e))
 
 
 if __name__ == "__main__":
     try:
         keyword = input("请输入搜索关键词 > ").strip()
         if not keyword:
-            raise ValueError("搜索关键词不能为空！")
+            raise ValueError("[Error] 搜索关键词不能为空！")
         asyncio.run(run_agent(keyword))
     except Exception as e:
-        print("程序出现错误:", str(e))
+        print("[Error] 程序出现错误:", str(e))
