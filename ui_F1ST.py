@@ -22,12 +22,29 @@ else:
 class CustomMsgBox(QMessageBox):
     def __init__(self, parent=None):
         super().__init__(parent)
+        # 移除标题栏，使消息框无边框
+        self.setWindowFlags(Qt.Dialog | Qt.FramelessWindowHint)
         self.setStyleSheet("background-color: white; color: black;")
         self.setStandardButtons(QMessageBox.Close)
         self.button(QMessageBox.Close).setText("好的")
         self.button(QMessageBox.Close).setStyleSheet(
             "min-width: 60px; border: 1px solid gray; border-radius: 1px;"
         )
+
+    def mousePressEvent(self, event):
+        """记录鼠标按下时窗口的位置偏移，用于拖动窗口"""
+        if event.button() == Qt.LeftButton:
+            self._offset = event.globalPos() - self.pos()
+
+    def mouseMoveEvent(self, event):
+        """根据鼠标移动更新窗口位置，实现窗口拖动效果"""
+        if self._offset is not None and event.buttons() == Qt.LeftButton:
+            self.move(event.globalPos() - self._offset)
+
+    def mouseReleaseEvent(self, event):
+        """重置窗口拖动偏移量"""
+        if event.button() == Qt.LeftButton:
+            self._offset = None
 
 
 # 定义自定义输入框类，实现焦点和鼠标事件下的样式切换
@@ -113,10 +130,13 @@ class UI(QWidget):
         self._offset = None
 
         # 添加欢迎标签并设置样式
-        self.welcome_label = QLabel('欢迎使用AstraGen 星核', self)
+        self.welcome_label = QLabel('欢迎使用 - AstraGen 星核', self)
         self.welcome_label.setFont(QFont(app.font().family(), 14))
         self.welcome_label.setStyleSheet("color: white;")
-        self.welcome_label.setGeometry(100, 35, 200, 30)
+        self.welcome_label.setAlignment(Qt.AlignCenter)
+        self.welcome_label.adjustSize()
+        self.welcome_label.move(
+            (self.width() - self.welcome_label.width()) // 2, 35)
 
         # 添加退出按钮并绑定退出事件
         self.exit_button = QPushButton('×', self)
@@ -128,8 +148,8 @@ class UI(QWidget):
         """)
         self.exit_button.clicked.connect(QApplication.instance().quit)
 
-        # 添加 API Key 输入框
-        self.search_entry = CustomLineEdit('请输入Deepseek的API Key', self)
+        # 添加 API KEY 输入框
+        self.search_entry = CustomLineEdit('请输入DeepSeek的API KEY', self)
         self.search_entry.setGeometry(50, 85, 200, 30)
 
         # 添加确认按钮并绑定搜索事件
@@ -151,7 +171,7 @@ class UI(QWidget):
         self.move(qr.topLeft())
 
     def on_search(self):
-        """处理确认按钮点击事件，验证 API Key 输入"""
+        """处理确认按钮点击事件，验证 API KEY 输入"""
         api_key = self.search_entry.text()
         if not api_key.strip():
             msg = CustomMsgBox(self)
@@ -160,7 +180,7 @@ class UI(QWidget):
             msg.setText("该项不能为空")
             msg.show()
         else:
-            print(f"API Key: {api_key}")
+            print(f"API KEY: {api_key}")
 
     def mousePressEvent(self, event):
         """记录鼠标按下时窗口的位置偏移，用于拖动窗口"""
@@ -174,7 +194,8 @@ class UI(QWidget):
 
     def mouseReleaseEvent(self, event):
         """重置窗口拖动偏移量"""
-        self._offset = None
+        if event.button() == Qt.LeftButton:
+            self._offset = None
 
 
 # 程序入口：创建并显示主窗口，启动应用事件循环
