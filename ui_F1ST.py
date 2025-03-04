@@ -6,7 +6,8 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtGui import QFont, QFontDatabase
 from PyQt5.QtCore import Qt
 
-# 创建全局 QApplication 对象
+
+# 初始化全局 QApplication 对象并设置应用字体
 app = QApplication(sys.argv)
 font_id = QFontDatabase.addApplicationFont("fonts/SarasaMonoSC-Light.ttf")
 if font_id != -1:
@@ -14,13 +15,13 @@ if font_id != -1:
     app.setFont(QFont(font_family))
 else:
     print("[Error] 加载自定义字体失败！")
-    font_family = "Arial"  # 如果加载失败则使用系统默认字体
+    font_family = "Arial"
 
 
+# 定义自定义消息框类，用于显示错误信息
 class CustomMsgBox(QMessageBox):
     def __init__(self, parent=None):
         super().__init__(parent)
-        # 设置白色背景和黑色文本
         self.setStyleSheet("background-color: white; color: black;")
         self.setStandardButtons(QMessageBox.Close)
         self.button(QMessageBox.Close).setText("好的")
@@ -29,6 +30,7 @@ class CustomMsgBox(QMessageBox):
         )
 
 
+# 定义自定义输入框类，实现焦点和鼠标事件下的样式切换
 class CustomLineEdit(QLineEdit):
     def __init__(self, placeholder, parent=None):
         super().__init__(parent)
@@ -96,9 +98,12 @@ class CustomLineEdit(QLineEdit):
         super().leaveEvent(event)
 
 
+# 定义主窗口类，包含界面组件及交互逻辑
 class UI(QWidget):
     def __init__(self):
         super().__init__()
+
+        # 窗口基础设置：无边框、标题、固定尺寸、背景样式和透明度
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setWindowTitle('AstraGen 星核')
         self.setFixedSize(400, 150)
@@ -107,11 +112,13 @@ class UI(QWidget):
         self.center()
         self._offset = None
 
+        # 添加欢迎标签并设置样式
         self.welcome_label = QLabel('欢迎使用AstraGen 星核', self)
         self.welcome_label.setFont(QFont(app.font().family(), 14))
         self.welcome_label.setStyleSheet("color: white;")
         self.welcome_label.setGeometry(100, 35, 200, 30)
 
+        # 添加退出按钮并绑定退出事件
         self.exit_button = QPushButton('×', self)
         self.exit_button.setGeometry(350, 10, 30, 25)
         self.exit_button.setStyleSheet("""
@@ -121,9 +128,11 @@ class UI(QWidget):
         """)
         self.exit_button.clicked.connect(QApplication.instance().quit)
 
+        # 添加 API Key 输入框
         self.search_entry = CustomLineEdit('请输入Deepseek的API Key', self)
         self.search_entry.setGeometry(50, 85, 200, 30)
 
+        # 添加确认按钮并绑定搜索事件
         self.search_button = QPushButton('确认', self)
         self.search_button.setGeometry(270, 85, 80, 30)
         self.search_button.setStyleSheet("""
@@ -135,12 +144,14 @@ class UI(QWidget):
         self.search_button.clicked.connect(self.on_search)
 
     def center(self):
+        """使窗口在屏幕上居中显示"""
         qr = self.frameGeometry()
         cp = QDesktopWidget().availableGeometry().center()
         qr.moveCenter(cp)
         self.move(qr.topLeft())
 
     def on_search(self):
+        """处理确认按钮点击事件，验证 API Key 输入"""
         api_key = self.search_entry.text()
         if not api_key.strip():
             msg = CustomMsgBox(self)
@@ -152,17 +163,21 @@ class UI(QWidget):
             print(f"API Key: {api_key}")
 
     def mousePressEvent(self, event):
+        """记录鼠标按下时窗口的位置偏移，用于拖动窗口"""
         if event.button() == Qt.LeftButton:
             self._offset = event.globalPos() - self.pos()
 
     def mouseMoveEvent(self, event):
+        """根据鼠标移动更新窗口位置，实现窗口拖动效果"""
         if self._offset is not None and event.buttons() == Qt.LeftButton:
             self.move(event.globalPos() - self._offset)
 
     def mouseReleaseEvent(self, event):
+        """重置窗口拖动偏移量"""
         self._offset = None
 
 
+# 程序入口：创建并显示主窗口，启动应用事件循环
 if __name__ == '__main__':
     window = UI()
     window.show()
