@@ -57,8 +57,12 @@ class Ui_MainWindow(object):
         self.exit_button.setText(_translate("MainWindow", "退出"))
         self.help_button.setText(_translate("MainWindow", "帮助"))
         self.setting_button.setText(_translate("MainWindow", "配置"))
-        self.repo_label.setText(_translate("MainWindow", "AstroGen - https://github.com/FiresJoeng/AstraGen"))
-        self.ver_label.setText(_translate("MainWindow", "Current Version: Demo 1.0"))
-        self.plainTextEdit.setPlainText(_translate("MainWindow", "请输入企业关键词..."))
+        self.repo_label.setText(_translate(
+            "MainWindow", "AstroGen - https://github.com/FiresJoeng/AstraGen"))
+        self.ver_label.setText(_translate(
+            "MainWindow", "Current Version: Demo 1.0"))
+        self.plainTextEdit.setPlainText(
+            _translate("MainWindow", "请输入企业关键词..."))
         self.go_button.setText(_translate("MainWindow", "生成报告"))
-        self.ver_label_2.setText(_translate("MainWindow", "Enter the keyword of enterprise."))
+        self.ver_label_2.setText(_translate(
+            "MainWindow", "Enter the keyword of enterprise."))
