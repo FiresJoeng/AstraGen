@@ -264,7 +264,7 @@ class VerifyWindow(QWidget):
 
     def start_first_animation(self):
         self.first_animation = QPropertyAnimation(self.progress_fill, b"size")
-        self.first_animation.setDuration(300)
+        self.first_animation.setDuration(150)
         self.first_animation.setStartValue(self.progress_fill.size())
         self.first_animation.setEndValue(QSize(self.first_target_width, 16))
         self.first_animation.setEasingCurve(QEasingCurve.Linear)
@@ -294,7 +294,7 @@ class VerifyWindow(QWidget):
         current_size = self.progress_fill.size()
         target_size = QSize(296, 16)
         self.second_animation = QPropertyAnimation(self.progress_fill, b"size")
-        self.second_animation.setDuration(100)
+        self.second_animation.setDuration(400)
         self.second_animation.setStartValue(current_size)
         self.second_animation.setEndValue(target_size)
         self.second_animation.setEasingCurve(QEasingCurve.Linear)
