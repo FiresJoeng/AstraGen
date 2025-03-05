@@ -22,7 +22,7 @@ def verify_deepseek_api():
         print("[Info] API Key验证成功")
         return DeepSeek_V3
     except Exception as e:
-        raise ValueError(f'[Error] API Key验证失败: {str(e)}')
+        raise ValueError(f'[Error] API KEY验证失败: {str(e)}')
 
 
 if __name__ == "__main__":
