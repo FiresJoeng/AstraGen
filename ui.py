@@ -236,7 +236,7 @@ class UI(QWidget):
         self.search_entry = CustomLineEdit("请输入DeepSeek的API KEY", self)
         self.search_entry.setGeometry(50, 100, 200, 30)
 
-        self.search_button = QPushButton("确认", self)
+        self.search_button = QPushButton("验证", self)
         self.search_button.setGeometry(270, 100, 80, 30)
         self.search_button.setStyleSheet(
             "background-color: #0077ED; color: white; border: none; border-radius: 5px;"
