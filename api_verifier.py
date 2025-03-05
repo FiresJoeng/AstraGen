@@ -16,10 +16,9 @@ def verify_deepseek_api():
         api_key=SecretStr(deepseek_api_key),
     )
 
-    # 测试API调用
     try:
         DeepSeek_V3.invoke("Test")
-        print("[Info] API Key验证成功")
+        print("[Info] API KEY验证成功")
         return DeepSeek_V3
     except Exception as e:
         raise ValueError(f'[Error] API KEY验证失败: {str(e)}')

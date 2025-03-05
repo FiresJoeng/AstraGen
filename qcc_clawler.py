@@ -5,6 +5,7 @@ from browser_use import Agent, Browser, Controller, BrowserConfig
 from browser_use.browser.context import BrowserContext, BrowserContextConfig
 from dotenv import load_dotenv
 from pydantic import SecretStr
+from api_verifier import verify_deepseek_api
 
 load_dotenv()
 

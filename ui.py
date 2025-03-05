@@ -1,8 +1,15 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QLineEdit, QMessageBox, QDesktopWidget
-from PyQt5.QtGui import QFont, QFontDatabase
-from PyQt5.QtCore import Qt, QPropertyAnimation, QEasingCurve, QSize
+import os
+from PyQt5.QtWidgets import (
+    QApplication, QWidget, QLabel, QPushButton, QLineEdit, QMessageBox,
+    QDesktopWidget, QGraphicsView, QGraphicsScene, QGraphicsPixmapItem
+)
+from PyQt5.QtGui import QFont, QFontDatabase, QPixmap
+from PyQt5.QtCore import Qt, QPropertyAnimation, QEasingCurve, QSize, QTimer
+from dotenv import load_dotenv, set_key, find_dotenv
 
+# 加载 .env 文件中的环境变量
+load_dotenv()
 
 # 初始化应用程序并加载自定义字体
 app = QApplication(sys.argv)
@@ -15,96 +22,6 @@ else:
     font_family = "Arial"
 
 
-# 定义启动屏幕类，负责显示启动动画和进度条
-class SplashScreen(QWidget):
-    def __init__(self):
-        super().__init__()
-        self._is_closing = False
-
-        # 设置窗口为无边框且置顶，固定窗口大小
-        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
-        self.setFixedSize(400, 150)
-
-        # 居中显示窗口
-        self.center()
-
-        # 设置背景颜色和透明度
-        self.setStyleSheet("background-color: black;")
-        self.setWindowOpacity(0.75)
-
-        # 初始化界面控件和启动动画
-        self.init_ui()
-        self.start_animation()
-
-    def init_ui(self):
-        # 创建显示启动文本的标签并居中显示
-        self.label = QLabel("极速启动中...", self)
-        self.label.setStyleSheet("color: white; font-size: 18px;")
-        self.label.adjustSize()
-        self.label.move((self.width() - self.label.width()) // 2, 50)
-
-        # 创建进度条的容器，并设置边框样式
-        self.progress_container = QWidget(self)
-        self.progress_container.setGeometry(50, 100, 300, 20)
-        self.progress_container.setStyleSheet(
-            "border: 2px solid white; border-radius: 5px; background-color: transparent;"
-        )
-
-        # 在容器中创建进度条填充部分，初始宽度设为0
-        self.progress_fill = QWidget(self.progress_container)
-        self.progress_fill.setGeometry(2, 2, 0, 16)
-        self.progress_fill.setStyleSheet(
-            "background-color: #0077ED; border-radius: 3px;")
-
-    def start_animation(self):
-        # 为进度条填充部分设置宽度动画
-        self.animation = QPropertyAnimation(self.progress_fill, b"size")
-        self.animation.setDuration(800)
-        self.animation.setStartValue(self.progress_fill.size())
-        self.animation.setEndValue(QSize(296, 16))
-        self.animation.setEasingCurve(QEasingCurve.Linear)
-        self.animation.finished.connect(self.on_animation_finished)
-        self.animation.start()
-
-    def center(self):
-        # 将窗口居中显示在屏幕上
-        qr = self.frameGeometry()
-        cp = QDesktopWidget().availableGeometry().center()
-        qr.moveCenter(cp)
-        self.move(qr.topLeft())
-
-    def on_animation_finished(self):
-        # 动画结束后淡出窗口并打开主界面
-        center_point = self.frameGeometry().center()
-        self.fade_and_close(callback=lambda: self.open_main(center_point))
-
-    def open_main(self, center_point):
-        # 初始化主界面并显示
-        self.main_window = WelcomeUI(center_point)
-        self.main_window.show()
-
-    def fade_and_close(self, callback=None):
-        # 执行淡出动画，并在动画结束后关闭窗口
-        self._is_closing = True
-        self.fade_animation = QPropertyAnimation(self, b"windowOpacity")
-        self.fade_animation.setDuration(200)
-        self.fade_animation.setStartValue(self.windowOpacity())
-        self.fade_animation.setEndValue(0)
-        if callback:
-            self.fade_animation.finished.connect(callback)
-        self.fade_animation.finished.connect(lambda: QWidget.close(self))
-        self.fade_animation.start()
-
-    def closeEvent(self, event):
-        # 重写关闭事件，确保窗口淡出后再关闭
-        if not self._is_closing:
-            event.ignore()
-            self.fade_and_close()
-        else:
-            event.accept()
-
-
-# 自定义消息框类，支持拖动并更改默认按钮文本
 class CustomMsgBox(QMessageBox):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -116,22 +33,18 @@ class CustomMsgBox(QMessageBox):
         )
 
     def mousePressEvent(self, event):
-        # 记录鼠标点击时的偏移位置，实现拖动效果
         if event.button() == Qt.LeftButton:
             self._offset = event.globalPos() - self.pos()
 
     def mouseMoveEvent(self, event):
-        # 实现消息框拖动效果
         if hasattr(self, "_offset") and event.buttons() == Qt.LeftButton:
             self.move(event.globalPos() - self._offset)
 
     def mouseReleaseEvent(self, event):
-        # 重置偏移量
         if event.button() == Qt.LeftButton:
             self._offset = None
 
     def showEvent(self, event):
-        # 显示时将消息框居中于父窗口
         if self.parent():
             parent_geometry = self.parent().frameGeometry()
             self_geometry = self.frameGeometry()
@@ -141,27 +54,21 @@ class CustomMsgBox(QMessageBox):
         super().showEvent(event)
 
 
-# 自定义文本输入框类，添加聚焦和悬停时的样式效果
 class CustomLineEdit(QLineEdit):
     def __init__(self, placeholder, parent=None):
         super().__init__(parent)
-        self.placeholder = placeholder
-
-        # 设置占位符文本及初始样式
         self.setPlaceholderText(placeholder)
         self.setStyleSheet(
             "color: grey; border: 2px solid #d9d9d9; background-color: white; border-radius: 5px;"
         )
 
     def focusInEvent(self, event):
-        # 聚焦时更新样式，突出显示输入框
         self.setStyleSheet(
             "color: black; border: 2px solid #0077ED; background-color: white; border-radius: 5px;"
         )
         super().focusInEvent(event)
 
     def focusOutEvent(self, event):
-        # 失焦时根据是否有输入更新样式
         if not self.text():
             self.setStyleSheet(
                 "color: grey; border: 2px solid #d9d9d9; background-color: white; border-radius: 5px;"
@@ -173,7 +80,6 @@ class CustomLineEdit(QLineEdit):
         super().focusOutEvent(event)
 
     def enterEvent(self, event):
-        # 鼠标进入时（非聚焦状态）更新样式
         if not self.hasFocus():
             self.setStyleSheet(
                 "color: grey; border: 2px solid black; background-color: #f9f9f9; border-radius: 5px;"
@@ -181,7 +87,6 @@ class CustomLineEdit(QLineEdit):
         super().enterEvent(event)
 
     def leaveEvent(self, event):
-        # 鼠标离开时恢复原有样式
         if not self.hasFocus():
             if not self.text():
                 self.setStyleSheet(
@@ -194,20 +99,16 @@ class CustomLineEdit(QLineEdit):
         super().leaveEvent(event)
 
 
-# 定义主界面类，负责整个应用的主要交互
 class WelcomeUI(QWidget):
     def __init__(self, center_point=None):
         super().__init__()
         self._is_closing = False
-
-        # 设置窗口为无边框并固定大小，同时设置初始透明度为0（用于淡入效果）
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setWindowTitle("AstraGen 星核")
         self.setFixedSize(400, 150)
         self.setStyleSheet("background-color: black;")
         self.setWindowOpacity(0)
 
-        # 根据传入中心点或自动居中显示窗口
         if center_point:
             self.move(center_point.x() - self.width() // 2,
                       center_point.y() - self.height() // 2)
@@ -216,7 +117,7 @@ class WelcomeUI(QWidget):
 
         self._offset = None
 
-        # 创建欢迎标签，并设置字体、颜色和居中显示
+        # 欢迎标签
         self.welcome_label = QLabel("欢迎使用 - AstraGen 星核", self)
         self.welcome_label.setFont(QFont(app.font().family(), 14))
         self.welcome_label.setStyleSheet("color: white;")
@@ -225,25 +126,25 @@ class WelcomeUI(QWidget):
         self.welcome_label.move(
             (self.width() - self.welcome_label.width()) // 2, 50)
 
-        # 创建退出按钮，点击后关闭窗口
+        # 退出按钮
         self.exit_button = QPushButton("×", self)
         self.exit_button.setGeometry(350, 10, 30, 25)
         self.exit_button.setStyleSheet(
             "background-color: transparent; color: white; border: none;")
         self.exit_button.clicked.connect(self.close)
 
-        # 创建API KEY输入框及对应的确认按钮
+        # 预填充 API KEY（从 .env 中读取）
+        api_key = os.getenv("DEEPSEEK_API_KEY", "")
         self.search_entry = CustomLineEdit("请输入DeepSeek的API KEY", self)
         self.search_entry.setGeometry(50, 100, 200, 30)
+        self.search_entry.setText(api_key)
 
         self.search_button = QPushButton("验证", self)
         self.search_button.setGeometry(270, 100, 80, 30)
         self.search_button.setStyleSheet(
-            "background-color: #0077ED; color: white; border: none; border-radius: 5px;"
-        )
+            "background-color: #0077ED; color: white; border: none; border-radius: 5px;")
         self.search_button.clicked.connect(self.on_search)
 
-        # 启动窗口淡入动画，使窗口逐渐显现
         self.fade_in_animation = QPropertyAnimation(self, b"windowOpacity")
         self.fade_in_animation.setDuration(200)
         self.fade_in_animation.setStartValue(0)
@@ -251,41 +152,45 @@ class WelcomeUI(QWidget):
         self.fade_in_animation.start()
 
     def center(self):
-        # 将主窗口居中显示在屏幕上
         qr = self.frameGeometry()
         cp = QDesktopWidget().availableGeometry().center()
         qr.moveCenter(cp)
         self.move(qr.topLeft())
 
     def on_search(self):
-        # 处理搜索按钮点击事件，验证API KEY输入
-        api_key = self.search_entry.text()
-        if not api_key.strip():
+        api_key = self.search_entry.text().strip()
+        if not api_key:
             msg = CustomMsgBox(self)
             msg.setIcon(QMessageBox.Critical)
             msg.setWindowTitle("Error!")
             msg.setText("非法的输入内容!")
             msg.show()
         else:
-            print(f"API KEY: {api_key}")
+            # 保存 API KEY 到 .env 文件
+            dotenv_path = find_dotenv()
+            if not dotenv_path:
+                dotenv_path = ".env"
+            set_key(dotenv_path, "DEEPSEEK_API_KEY", api_key)
+            os.environ["DEEPSEEK_API_KEY"] = api_key
+
+            self.hide()
+            # VerifyWindow 独立显示，不指定父控件
+            self.connect_window = VerifyWindow(welcome_ui=self)
+            self.connect_window.show()
 
     def mousePressEvent(self, event):
-        # 记录鼠标点击位置偏移，实现窗口拖动
         if event.button() == Qt.LeftButton:
             self._offset = event.globalPos() - self.pos()
 
     def mouseMoveEvent(self, event):
-        # 拖动窗口时更新窗口位置
         if self._offset is not None and event.buttons() == Qt.LeftButton:
             self.move(event.globalPos() - self._offset)
 
     def mouseReleaseEvent(self, event):
-        # 释放鼠标后重置偏移量
         if event.button() == Qt.LeftButton:
             self._offset = None
 
     def fade_and_close(self, callback=None):
-        # 执行淡出动画，并在动画结束后关闭窗口
         self._is_closing = True
         self.fade_animation = QPropertyAnimation(self, b"windowOpacity")
         self.fade_animation.setDuration(200)
@@ -297,7 +202,6 @@ class WelcomeUI(QWidget):
         self.fade_animation.start()
 
     def closeEvent(self, event):
-        # 重写关闭事件，淡出窗口后退出应用
         if not self._is_closing:
             event.ignore()
             self.fade_and_close(
@@ -306,8 +210,257 @@ class WelcomeUI(QWidget):
             event.accept()
 
 
-# 程序入口：显示启动屏幕并启动主事件循环
+class VerifyWindow(QWidget):
+    def __init__(self, welcome_ui):
+        super().__init__(None)
+        self.welcome_ui = welcome_ui
+        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
+        self.setFixedSize(400, 150)
+        self.setStyleSheet("background-color: black;")
+        self.setWindowOpacity(0.75)
+        self.center()
+        self._offset = None
+
+        self.label = QLabel("连接至服务器...", self)
+        self.label.setStyleSheet("color: white; font-size: 18px;")
+        self.label.adjustSize()
+        self.label.move((self.width() - self.label.width()) // 2, 50)
+
+        self.progress_container = QWidget(self)
+        self.progress_container.setGeometry(50, 100, 300, 20)
+        self.progress_container.setStyleSheet(
+            "border: 2px solid white; border-radius: 5px; background-color: transparent;"
+        )
+        self.progress_fill = QWidget(self.progress_container)
+        self.progress_fill.setStyleSheet(
+            "background-color: #0077ED; border: none; border-radius: none;")
+        self.progress_fill.setGeometry(2, 2, 0, 16)
+
+        # 40%对应的宽度
+        self.first_target_width = int(296 * 0.4)
+
+    def center(self):
+        qr = self.frameGeometry()
+        cp = QDesktopWidget().availableGeometry().center()
+        qr.moveCenter(cp)
+        self.move(qr.topLeft())
+
+    def mousePressEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            self._offset = event.globalPos() - self.pos()
+
+    def mouseMoveEvent(self, event):
+        if self._offset is not None and event.buttons() == Qt.LeftButton:
+            self.move(event.globalPos() - self._offset)
+
+    def mouseReleaseEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            self._offset = None
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        # 窗口显示后启动第一段动画
+        QTimer.singleShot(0, self.start_first_animation)
+
+    def start_first_animation(self):
+        self.first_animation = QPropertyAnimation(self.progress_fill, b"size")
+        self.first_animation.setDuration(300)
+        self.first_animation.setStartValue(self.progress_fill.size())
+        self.first_animation.setEndValue(QSize(self.first_target_width, 16))
+        self.first_animation.setEasingCurve(QEasingCurve.Linear)
+        self.first_animation.finished.connect(self.start_verification)
+        self.first_animation.start()
+
+    def start_verification(self):
+        try:
+            from api_verifier import verify_deepseek_api
+            verify_deepseek_api()  # 仅调用 API 验证
+            # 验证成功后更新标签文字
+            self.label.setText("验证成功! 极速启动中...")
+            self.label.adjustSize()
+            self.label.move((self.width() - self.label.width()) // 2, 50)
+            self.start_second_animation()
+        except Exception as e:
+            self.close()
+            if self.welcome_ui:
+                self.welcome_ui.show()
+                msg = CustomMsgBox(self.welcome_ui)
+                msg.setIcon(QMessageBox.Critical)
+                msg.setWindowTitle("Error!")
+                msg.setText(str(e))
+                msg.show()
+
+    def start_second_animation(self):
+        current_size = self.progress_fill.size()
+        target_size = QSize(296, 16)
+        self.second_animation = QPropertyAnimation(self.progress_fill, b"size")
+        self.second_animation.setDuration(100)
+        self.second_animation.setStartValue(current_size)
+        self.second_animation.setEndValue(target_size)
+        self.second_animation.setEasingCurve(QEasingCurve.Linear)
+        self.second_animation.finished.connect(self.open_main_ui)
+        self.second_animation.start()
+
+    def open_main_ui(self):
+        self.close()
+        main_ui = MainUI()
+        main_ui.show()
+
+
+class MainUI(QWidget):
+    def __init__(self):
+        super().__init__()
+        self._is_closing = False
+        self.setWindowFlags(Qt.FramelessWindowHint)
+        self.setWindowTitle("MainWindow")
+        self.setFixedSize(400, 600)
+        self.setStyleSheet("background-color: black;")
+        self.setWindowOpacity(0)
+        self.center()
+        self.init_ui()
+
+        self.fade_in_animation = QPropertyAnimation(self, b"windowOpacity")
+        self.fade_in_animation.setDuration(200)
+        self.fade_in_animation.setStartValue(0)
+        self.fade_in_animation.setEndValue(0.75)
+        self.fade_in_animation.start()
+
+        self._offset = None
+
+    def init_ui(self):
+        top_button_style = """
+        QPushButton {
+            background-color: transparent;
+            color: white;
+            border: none;
+            text-decoration: underline;
+            font-size: 16px;
+        }
+        QPushButton:hover {
+            color: #0077ED;
+        }
+        """
+        # 右上角三个按钮：配置、帮助、退出
+        self.setting_button = QPushButton("配置", self)
+        self.setting_button.setGeometry(160, 10, 75, 30)
+        self.setting_button.setStyleSheet(top_button_style)
+        self.setting_button.clicked.connect(self.on_setting)
+
+        self.help_button = QPushButton("帮助", self)
+        self.help_button.setGeometry(240, 10, 75, 30)
+        self.help_button.setStyleSheet(top_button_style)
+        self.help_button.clicked.connect(self.on_help)
+
+        self.exit_button = QPushButton("退出", self)
+        self.exit_button.setGeometry(320, 10, 75, 30)
+        self.exit_button.setStyleSheet(top_button_style)
+        self.exit_button.clicked.connect(self.close)
+
+        # 中部图形视图（用于显示 LOGO 或图片）
+        self.graphicsView = QGraphicsView(self)
+        self.graphicsView.setGeometry(140, 100, 128, 128)
+        self.graphicsView.setStyleSheet(
+            "background-color: transparent; border: none;")
+        scene = QGraphicsScene(self)
+        pixmap = QPixmap("icon.png")
+        if not pixmap.isNull():
+            item = QGraphicsPixmapItem(pixmap)
+            scene.addItem(item)
+            item.setPos((self.graphicsView.width() - pixmap.width()) / 2,
+                        (self.graphicsView.height() - pixmap.height()) / 2)
+        else:
+            print("[Error] icon.png 加载失败！")
+        self.graphicsView.setScene(scene)
+
+        # 主标题标签
+        self.title_label = QLabel("AstraGen - 星核", self)
+        self.title_label.setStyleSheet("color: white;font-size: 32px;")
+        self.title_label.adjustSize()
+        self.title_label.move(
+            (self.width() - self.title_label.width()) // 2, 250)
+
+        # 输入框：企业关键词
+        self.search_entry = QLineEdit(self)
+        self.search_entry.setGeometry(50, 320, 200, 30)
+        self.search_entry.setPlaceholderText("请输入企业关键词...")
+        self.search_entry.setStyleSheet(
+            "color: black; border: 2px solid #d9d9d9; background-color: white; border-radius: 5px;"
+        )
+
+        # “生成报告”按钮
+        self.go_button = QPushButton("生成报告", self)
+        self.go_button.setGeometry(270, 320, 80, 30)
+        self.go_button.setStyleSheet(
+            "background-color: #0077ED; color: white; border: none; border-radius: 5px; font-size: 16px;"
+        )
+        self.go_button.clicked.connect(self.on_go)
+
+        # 底部版本信息标签
+        self.ver_label = QLabel("AstraGen - Demo 1.0", self)
+        self.ver_label.setStyleSheet("color: white;")
+        self.ver_label.adjustSize()
+        self.ver_label.move((self.width() - self.ver_label.width()) // 2, 560)
+
+        self.repo_label = QLabel(
+            "https://github.com/FiresJoeng/AstraGen", self)
+        self.repo_label.setStyleSheet("color: white;")
+        self.repo_label.adjustSize()
+        self.repo_label.move(
+            (self.width() - self.repo_label.width()) // 2, 580)
+
+    def center(self):
+        qr = self.frameGeometry()
+        cp = QDesktopWidget().availableGeometry().center()
+        qr.moveCenter(cp)
+        self.move(qr.topLeft())
+
+    def on_go(self):
+        keyword = self.search_entry.text().strip()
+        if not keyword:
+            print("请输入有效的企业关键词！")
+        else:
+            print(f"生成报告，企业关键词：{keyword}")
+            # 生成报告逻辑后续实现
+
+    def on_help(self):
+        print("帮助：将在后续版本解锁！")
+
+    def on_setting(self):
+        print("配置：将在后续版本解锁！")
+
+    def fade_and_close(self, callback=None):
+        self._is_closing = True
+        self.fade_animation = QPropertyAnimation(self, b"windowOpacity")
+        self.fade_animation.setDuration(200)
+        self.fade_animation.setStartValue(self.windowOpacity())
+        self.fade_animation.setEndValue(0)
+        if callback:
+            self.fade_animation.finished.connect(callback)
+        self.fade_animation.finished.connect(lambda: QWidget.close(self))
+        self.fade_animation.start()
+
+    def mousePressEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            self._offset = event.globalPos() - self.pos()
+
+    def mouseMoveEvent(self, event):
+        if self._offset is not None and event.buttons() == Qt.LeftButton:
+            self.move(event.globalPos() - self._offset)
+
+    def mouseReleaseEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            self._offset = None
+
+    def closeEvent(self, event):
+        if not self._is_closing:
+            event.ignore()
+            self.fade_and_close(
+                callback=lambda: QApplication.instance().quit())
+        else:
+            event.accept()
+
+
 if __name__ == "__main__":
-    splash = SplashScreen()
-    splash.show()
+    welcome = WelcomeUI()
+    welcome.show()
     sys.exit(app.exec_())
