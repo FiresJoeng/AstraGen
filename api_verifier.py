@@ -6,7 +6,6 @@ load_dotenv()
 
 
 def verify_deepseek_api():
-    """验证DeepSeek API Key并返回ChatOpenAI实例"""
     deepseek_api_key = os.getenv("DEEPSEEK_API_KEY", "")
     if not deepseek_api_key:
         raise ValueError('[Error] 请先在 ".env" 文件内设置 "DEEPSEEK_API_KEY"')

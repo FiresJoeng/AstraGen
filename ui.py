@@ -80,7 +80,7 @@ class SplashScreen(QWidget):
 
     def open_main(self, center_point):
         # 初始化主界面并显示
-        self.main_window = UI(center_point)
+        self.main_window = WelcomeUI(center_point)
         self.main_window.show()
 
     def fade_and_close(self, callback=None):
@@ -195,7 +195,7 @@ class CustomLineEdit(QLineEdit):
 
 
 # 定义主界面类，负责整个应用的主要交互
-class UI(QWidget):
+class WelcomeUI(QWidget):
     def __init__(self, center_point=None):
         super().__init__()
         self._is_closing = False
