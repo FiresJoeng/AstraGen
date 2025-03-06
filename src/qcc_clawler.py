@@ -34,7 +34,7 @@ context_config = BrowserContextConfig(
 
 # 定义浏览器配置（无头模式）
 browser_config = BrowserConfig(
-    headless=False,
+    headless=True,
     new_context_config=context_config
 )
 
