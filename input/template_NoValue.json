@@ -1,0 +1,62 @@
+{
+  "company_name": "",
+  "unified_social_credit_code": "",
+  "legal_representative": "",
+  "registration_status": "",
+  "establishment_date": "",
+  "phone": "",
+  "email": "",
+  "website": "",
+  "address": "",
+  "industry": "",
+  "company_size": "",
+  "employee_count": "",
+  "registered_capital": "",
+  "paid_in_capital": "",
+  "organization_code": "",
+  "business_license_number": "",
+  "tax_identification_number": "",
+  "taxpayer_qualification": "",
+  "company_type": "",
+  "business_term": "",
+  "personnel_size": "",
+  "participants_count": "",
+  "registered_address": "",
+  "registration_authority": "",
+  "region": "",
+  "international_industry": "",
+  "english_name": "",
+  "business_scope": "",
+  "shareholders": [
+    {
+      "name": "",
+      "type": "",
+      "shareholding_ratio": "",
+      "subscribed_capital": "",
+      "subscription_date": "",
+      "indirect_shareholding_ratio": "",
+      "first_shareholding_date": ""
+    },
+    {
+      "name": "",
+      "type": "",
+      "shareholding_ratio": "",
+      "subscribed_capital": "",
+      "subscription_date": "",
+      "indirect_shareholding_ratio": "",
+      "first_shareholding_date": ""
+    }
+  ],
+  "key_personnel": [
+    {
+      "name": "",
+      "position": "",
+      "shareholding_ratio": ""
+    },
+    {
+      "name": "",
+      "position": "",
+      "shareholding_ratio": ""
+    }
+  ]
+}
