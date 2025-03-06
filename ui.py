@@ -1,3 +1,9 @@
+'''
+TODO:
+1. 修复弹窗逻辑问题，其中包括Msg和Main的弹出问题。
+2. 简化现有代码，将冗余类封装进.py从外部调用。
+'''
+
 import sys
 import os
 from PyQt5.QtWidgets import (
@@ -7,6 +13,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtGui import QFont, QFontDatabase, QPixmap, QIcon
 from PyQt5.QtCore import Qt, QPropertyAnimation, QEasingCurve, QSize, QTimer
 from dotenv import load_dotenv, set_key, find_dotenv
+from src import api_verifier, docx_filler, qcc_clawler 
 
 # 加载环境变量文件
 load_dotenv()
@@ -92,35 +99,6 @@ class FadeAnimations:
         widget._fade_animation = animation
 
 
-class MsgBox(MouseEvents, QMessageBox):
-    """
-    自定义消息对话框，继承自QMessageBox和MouseEvents
-    """
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        # 设置窗口图标
-        self.setWindowIcon(QIcon("icon.ico"))
-        # 设置对话框样式
-        self.setStyleSheet("background-color: white; color: black;")
-        self.setStandardButtons(QMessageBox.Close)
-        # 自定义关闭按钮文本和样式
-        self.button(QMessageBox.Close).setText("好的")
-        self.button(QMessageBox.Close).setStyleSheet(
-            "min-width: 60px; border: 1px solid gray; border-radius: 1px;"
-        )
-
-    def showEvent(self, event):
-        # 如果存在父窗口，将对话框移动到父窗口中心
-        if self.parent():
-            parent_geometry = self.parent().frameGeometry()
-            self_geometry = self.frameGeometry()
-            new_x = parent_geometry.center().x() - self_geometry.width() // 2
-            new_y = parent_geometry.center().y() - self_geometry.height() // 2
-            self.move(new_x, new_y)
-        super().showEvent(event)
-
-
 class CustomLineEdit(QLineEdit):
     """
     自定义的输入框，带有placeholder和焦点事件样式切换
@@ -174,6 +152,35 @@ class CustomLineEdit(QLineEdit):
         super().leaveEvent(event)
 
 
+class MsgBox(MouseEvents, QMessageBox):
+    """
+    自定义消息对话框，继承自QMessageBox和MouseEvents
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        # 设置窗口图标
+        self.setWindowIcon(QIcon("img/icon.ico"))
+        # 设置对话框样式
+        self.setStyleSheet("background-color: white; color: black;")
+        self.setStandardButtons(QMessageBox.Close)
+        # 自定义关闭按钮文本和样式
+        self.button(QMessageBox.Close).setText("好的")
+        self.button(QMessageBox.Close).setStyleSheet(
+            "min-width: 60px; border: 1px solid gray; border-radius: 1px;"
+        )
+
+    def showEvent(self, event):
+        # 如果存在父窗口，将对话框移动到父窗口中心
+        if self.parent():
+            parent_geometry = self.parent().frameGeometry()
+            self_geometry = self.frameGeometry()
+            new_x = parent_geometry.center().x() - self_geometry.width() // 2
+            new_y = parent_geometry.center().y() - self_geometry.height() // 2
+            self.move(new_x, new_y)
+        super().showEvent(event)
+
+
 class WelcomeUI(MouseEvents, QWidget):
     """
     欢迎界面，包含API KEY输入和验证逻辑
@@ -182,10 +189,10 @@ class WelcomeUI(MouseEvents, QWidget):
     def __init__(self, center_point=None):
         super().__init__()
         # 设置窗口图标
-        self.setWindowIcon(QIcon("icon.ico"))
+        self.setWindowIcon(QIcon("img/icon.ico"))
         # 设置窗口无边框和基本属性
         self.setWindowFlags(Qt.FramelessWindowHint)
-        self.setWindowTitle("AstraGen 星核")
+        self.setWindowTitle("AstraGen 星核 - 欢迎页面")
         self.setFixedSize(400, 150)
         self.setStyleSheet("background-color: black;")
         self.setWindowOpacity(0)
@@ -227,7 +234,7 @@ class WelcomeUI(MouseEvents, QWidget):
         self.verify_button.setStyleSheet(
             "background-color: #0077ED; color: white; border: none; border-radius: 5px;"
         )
-        self.verify_button.clicked.connect(self.go_verify)
+        self.verify_button.clicked.connect(self.show_verifing)
 
         # 执行淡入动画显示窗口
         FadeAnimations.fade_in(self)
@@ -241,7 +248,7 @@ class WelcomeUI(MouseEvents, QWidget):
         qr.moveCenter(cp)
         self.move(qr.topLeft())
 
-    def go_verify(self):
+    def show_verifing(self):
         """
         API KEY验证逻辑：
         1. 检查输入是否为空
@@ -287,7 +294,8 @@ class VerifyProgessBar(MouseEvents, QWidget):
         super().__init__(None)
         self.welcome_ui = welcome_ui
         # 设置窗口图标
-        self.setWindowIcon(QIcon("icon.ico"))
+        self.setWindowIcon(QIcon("img/icon.ico"))
+        self.setWindowTitle("AstraGen 星核 - 连接中...")
         # 设置窗口属性
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
         self.setFixedSize(400, 150)
@@ -296,7 +304,7 @@ class VerifyProgessBar(MouseEvents, QWidget):
         self.center()
 
         # 状态标签
-        self.label = QLabel("连接至服务器...", self)
+        self.label = QLabel("连接至DeepSeek服务器...", self)
         self.label.setStyleSheet("color: white; font-size: 18px;")
         self.label.adjustSize()
         self.label.move((self.width() - self.label.width()) // 2, 50)
@@ -349,8 +357,7 @@ class VerifyProgessBar(MouseEvents, QWidget):
         开始验证API的过程，并根据结果更新状态
         """
         try:
-            from api_verifier import verify_deepseek_api
-            verify_deepseek_api()
+            api_verifier.verify_deepseek_api()
             self.label.setText("验证成功! 极速启动中...")
             self.label.adjustSize()
             self.label.move((self.width() - self.label.width()) // 2, 50)
@@ -408,7 +415,7 @@ class MainUI(MouseEvents, QWidget):
     def __init__(self):
         super().__init__()
         # 设置窗口图标
-        self.setWindowIcon(QIcon("icon.ico"))
+        self.setWindowIcon(QIcon("img/icon.ico"))
         # 设置窗口属性
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setWindowTitle("MainWindow")
@@ -464,7 +471,7 @@ class MainUI(MouseEvents, QWidget):
         self.graphicsView.setStyleSheet(
             "background-color: transparent; border: none;")
         scene = QGraphicsScene(self)
-        pixmap = QPixmap("icon.png")
+        pixmap = QPixmap("img/icon.png")
         if not pixmap.isNull():
             item = QGraphicsPixmapItem(pixmap)
             scene.addItem(item)
