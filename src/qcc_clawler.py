@@ -29,7 +29,7 @@ def get_deepseek_api_clients():
 context_config = BrowserContextConfig(
     cookies_file="data/cookies.json",
     viewport_expansion=-1,
-    browser_window_size={"width": 800, "height": 600}
+    browser_window_size={"width": 1280, "height": 720}
 )
 
 # 定义浏览器配置（无头模式）
@@ -44,39 +44,12 @@ def create_qcc_agent(keyword: str) -> Agent:
     if not keyword:
         raise ValueError("[Error] 搜索关键词不能为空！")
     qcc_url = f"https://www.qcc.com/weblogin?back=web%2Fsearch%3Fkey%3D{keyword}"
-    default_actions = [{"go_to_url": {"url": qcc_url}}]
-    qcc_agent_prompt = f'''
-1. 调用"login_page"（获取登录页面）函数。
-2. 等待30秒，直到用户完成登录并且网页跳转，再继续下一步。若当前已登录，则忽略此步骤，直接进行下一步。
-3. 请点击第一条搜索结果。
-4. 请总结页面中该企业的所有信息，整理归纳为JSON形式输出。
-5. 调用"extract_json"（保存企业信息）函数。注意：只调用一次，然后立即继续下一步！
-6. 关闭浏览器。
-'''
 
     # 创建 Controller，并利用闭包捕获 keyword
     controller = Controller()
 
-    @controller.action("获取登录页面")
-    async def login_page(browser: Browser):
-        try:
-            screenshot_dir = "screenshots"
-            os.makedirs(screenshot_dir, exist_ok=True)
-            screenshot_path = os.path.join(screenshot_dir, "login_page.png")
-            page = await browser.get_current_page()
-            if not page:
-                raise ValueError("当前页面不可用")
-            await page.screenshot(path=screenshot_path)
-            feedback_msg = f"[Function] 成功保存截图至 {screenshot_path}"
-            print(feedback_msg)
-            return feedback_msg
-        except Exception as e:
-            error_msg = f"[Error] 获取登录页面失败: {str(e)}"
-            print(error_msg)
-            raise
-
     @controller.action("保存企业信息")
-    async def extract_json(browser: Browser, content: str):
+    async def 保存企业信息(browser: Browser, content: str):
         try:
             output_dir = "output"
             os.makedirs(output_dir, exist_ok=True)
@@ -91,12 +64,43 @@ def create_qcc_agent(keyword: str) -> Agent:
             print(error_msg)
             raise
 
+    @controller.action("screenshot")
+    async def screenshot(browser: Browser):
+        try:
+            screenshot_dir = "screenshots"
+            os.makedirs(screenshot_dir, exist_ok=True)
+            screenshot_path = os.path.join(screenshot_dir, "login_page.png")
+            page = await browser.get_current_page()
+            if not page:
+                raise ValueError("[Error] 当前页面不可用")
+            await page.screenshot(path=screenshot_path)
+            feedback_msg = f"[Function] 成功保存截图至 {screenshot_path}"
+            print(feedback_msg)
+            return feedback_msg
+        except Exception as e:
+            error_msg = f"[Error] 获取登录页面失败: {str(e)}"
+            print(error_msg)
+            raise
+
+    default_actions = [
+        {"go_to_url": {"url": qcc_url}},
+        {"screenshot": {}},
+    ]
+
     # 创建浏览器实例与上下文
     browser = Browser(config=browser_config)
     browser_context = BrowserContext(browser=browser, config=context_config)
 
     # 获取最新的 DeepSeek API 客户端
     DeepSeek_V3, _ = get_deepseek_api_clients()
+
+    qcc_agent_prompt = f'''
+1. 如需登录，请等待30秒，直到用户完成登录并且网页跳转。否则，请忽略此步骤。
+2. 请点击第一条搜索结果。
+3. 请总结页面中该企业的所有信息，整理归纳为JSON形式输出。
+4. 调用"保存企业信息"（保存企业信息）函数。注意：只调用一次，然后立即继续下一步！
+5. 关闭浏览器。
+'''
 
     # 创建 Agent 实例
     qcc_agent = Agent(
@@ -126,9 +130,9 @@ async def run_agent(keyword: str):
 
 if __name__ == "__main__":
     try:
-        keyword = input("请输入搜索关键词 > ").strip()
-        if not keyword:
+        input_keyword = input("请输入搜索关键词 > ").strip()
+        if not input_keyword:
             raise ValueError("[Error] 搜索关键词不能为空！")
-        asyncio.run(run_agent(keyword))
+        asyncio.run(run_agent(input_keyword))
     except Exception as e:
         print("[Error] 程序出现错误:", str(e))

@@ -7,6 +7,7 @@ TODO:
 5. 增加qcc_clawler的调用错误捕获。
 6. 制作go_button的禁用效果和重新启用效果。
 7. 修复生成时窗口无响应的问题。
+8. 弹出截图。
 '''
 
 
@@ -558,7 +559,14 @@ class MainUI(MouseEvents, QWidget):
             msg.setText("请输入有效的企业关键词!")
             msg.show()
         else:
-            asyncio.run(qcc_clawler.run_agent(keyword))
+            try:
+                asyncio.run(qcc_clawler.run_agent(keyword))
+            except Exception as e:
+                msg = MsgBox(self)
+                msg.setIcon(QMessageBox.Critical)
+                msg.setWindowTitle("Error!")
+                msg.setText("发生了一个致命错误: "+str(e))
+                msg.show()
 
     def on_help(self):
         print("帮助：将在后续版本解锁！")

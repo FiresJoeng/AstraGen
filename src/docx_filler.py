@@ -2,6 +2,9 @@ import os
 import json
 from docx import Document
 
+os.makedirs('input', exist_ok=True)
+os.makedirs('output', exist_ok=True)
+
 
 def load_json(json_path):
     if not os.path.exists(json_path):
@@ -61,3 +64,14 @@ def generate_report(keyword, template='input/template.docx', output_dir='output'
     fill_docx(template, fill_data, output_path)
 
     return output_path
+
+
+if __name__ == "__main__":
+    try:
+        input_keyword = input("文件名 (无后缀) > ").strip()
+        if not input_keyword:
+            raise ValueError("[Error] 文件名不能为空！")
+        test_result = generate_report(input_keyword)
+        print(str(test_result))
+    except Exception as e:
+        print("[Error] 程序出现错误:", str(e))
