@@ -5,7 +5,7 @@ from browser_use import Agent, Browser, Controller, BrowserConfig
 from browser_use.browser.context import BrowserContext, BrowserContextConfig
 from dotenv import load_dotenv
 from pydantic import SecretStr
-from api_verifier import verify_deepseek_api
+
 
 load_dotenv()
 
@@ -28,7 +28,7 @@ DeepSeek_R1 = ChatOpenAI(
 
 # 定义浏览器上下文配置
 context_config = BrowserContextConfig(
-    cookies_file="cookies/cookies.json",
+    cookies_file="data/cookies.json",
     viewport_expansion=-1,
     browser_window_size={"width": 800, "height": 600}
 )
@@ -47,7 +47,7 @@ def create_qcc_agent(keyword: str) -> Agent:
     qcc_url = f"https://www.qcc.com/weblogin?back=web%2Fsearch%3Fkey%3D{keyword}"
     default_actions = [{"go_to_url": {"url": qcc_url}}]
     qcc_agent_prompt = f'''
-1. 如果网页提示需要登录，请调用"login_page"（获取登录页）函数。如果网页不需要登录，请直接跳到第3步。
+1. 若网页提示需要登录，请调用"login_page"（获取登录页）函数。
 2. 之后重复等待30秒，直到用户完成登录并且网页跳转，再继续下一步。
 3. 请点击第一条搜索结果。
 4. 请总结页面中该企业的所有信息，整理归纳为JSON形式输出。
