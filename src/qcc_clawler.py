@@ -47,8 +47,8 @@ def create_qcc_agent(keyword: str) -> Agent:
     qcc_url = f"https://www.qcc.com/weblogin?back=web%2Fsearch%3Fkey%3D{keyword}"
     default_actions = [{"go_to_url": {"url": qcc_url}}]
     qcc_agent_prompt = f'''
-1. 若网页提示需要登录，请调用"login_page"（获取登录页）函数。
-2. 之后重复等待30秒，直到用户完成登录并且网页跳转，再继续下一步。
+1. 调用"login_page"（获取登录页面）函数。
+2. 等待30秒，直到用户完成登录并且网页跳转，再继续下一步。若当前已登录，则忽略此步骤，直接进行下一步。
 3. 请点击第一条搜索结果。
 4. 请总结页面中该企业的所有信息，整理归纳为JSON形式输出。
 5. 调用"extract_json"（保存企业信息）函数。注意：只调用一次，然后立即继续下一步！

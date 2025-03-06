@@ -1,9 +1,15 @@
 '''
 TODO:
-1. 修复弹窗逻辑问题，其中包括MsgBox和MainUI的弹出问题。
+1. 修复弹窗逻辑问题，其中包括MsgBox的弹出位置问题和所有窗口弹出不在最前的问题。
 2. 简化现有代码，将冗余的类封装进.py从外部调用。
+3. GeneratorWindow的设计。
+4. 预制“按钮”。
+5. qcc_clawler的调用错误捕获。
+6. go_button的禁用效果和重新启用。
 '''
 
+
+import asyncio
 import sys
 import os
 from PyQt5.QtWidgets import (
@@ -13,7 +19,8 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtGui import QFont, QFontDatabase, QPixmap, QIcon
 from PyQt5.QtCore import Qt, QPropertyAnimation, QEasingCurve, QSize, QTimer
 from dotenv import load_dotenv, set_key, find_dotenv
-from src import api_verifier, docx_filler, qcc_clawler 
+from src import api_verifier, qcc_clawler, docx_filler
+
 
 # 加载环境变量文件
 load_dotenv()
@@ -30,11 +37,8 @@ else:
     font_family = "Arial"
 
 
+# 鼠标左键可拖动窗口
 class MouseEvents:
-    """
-    用于实现鼠标拖动窗口的事件处理基类
-    """
-
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
             # 记录鼠标点击时相对于窗口的偏移量
@@ -51,10 +55,8 @@ class MouseEvents:
             self._offset = None
 
 
+# 淡入淡出动画
 class FadeAnimations:
-    """
-    封装淡入淡出动画的类
-    """
     @staticmethod
     def fade_in(widget, duration=200, start=0, end=0.75):
         """
@@ -84,6 +86,19 @@ class FadeAnimations:
         widget._fade_animation = animation
 
     @staticmethod
+    def fade_and_show(widget, duration=200):
+        """
+        淡入并显示窗口的动画
+        """
+        widget.show()
+        animation = QPropertyAnimation(widget, b"windowOpacity")
+        animation.setDuration(duration)
+        animation.setStartValue(0)
+        animation.setEndValue(0.75)
+        animation.start()
+        widget._fade_animation = animation
+
+    @staticmethod
     def fade_and_hide(widget, callback=None, duration=200):
         """
         淡出并隐藏窗口的动画
@@ -99,11 +114,8 @@ class FadeAnimations:
         widget._fade_animation = animation
 
 
+# 预制 输入框
 class CustomLineEdit(QLineEdit):
-    """
-    自定义的输入框，带有placeholder和焦点事件样式切换
-    """
-
     def __init__(self, placeholder, parent=None):
         super().__init__(parent)
         self.setPlaceholderText(placeholder)
@@ -152,11 +164,8 @@ class CustomLineEdit(QLineEdit):
         super().leaveEvent(event)
 
 
+# 预制 消息弹窗
 class MsgBox(MouseEvents, QMessageBox):
-    """
-    自定义消息对话框，继承自QMessageBox和MouseEvents
-    """
-
     def __init__(self, parent=None):
         super().__init__(parent)
         # 设置窗口图标
@@ -223,10 +232,10 @@ class WelcomeUI(MouseEvents, QWidget):
         self.exit_button.clicked.connect(self.close_window)
 
         # API KEY输入框
-        self.search_entry = CustomLineEdit("请输入DeepSeek的API KEY", self)
-        self.search_entry.setGeometry(50, 100, 200, 30)
+        self.api_entry = CustomLineEdit("请输入DeepSeek的API KEY", self)
+        self.api_entry.setGeometry(50, 100, 200, 30)
         api_key = os.getenv("DEEPSEEK_API_KEY", "")
-        self.search_entry.setText(api_key)
+        self.api_entry.setText(api_key)
 
         # 验证按钮
         self.verify_button = QPushButton("验证", self)
@@ -255,7 +264,7 @@ class WelcomeUI(MouseEvents, QWidget):
         2. 保存API KEY到环境变量文件中
         3. 执行淡出动画，并启动验证进度条界面
         """
-        api_key = self.search_entry.text().strip()
+        api_key = self.api_entry.text().strip()
         if not api_key:
             msg = MsgBox(self)
             msg.setIcon(QMessageBox.Critical)
@@ -364,15 +373,15 @@ class VerifyProgessBar(MouseEvents, QWidget):
             self.start_second_animation()
         except Exception as e:
             FadeAnimations.fade_and_close(
-                self, callback=lambda: self.on_verification_failed(str(e))
+                self, callback=lambda e=str(e): self.verification_failed(e)
             )
 
-    def on_verification_failed(self, error_message):
+    def verification_failed(self, error_message):
         """
         验证失败时，显示错误消息，并重新显示欢迎界面
         """
         if self.welcome_ui:
-            self.welcome_ui.show()
+            FadeAnimations.fade_and_show(self.welcome_ui)
             msg = MsgBox(self.welcome_ui)
             msg.setIcon(QMessageBox.Critical)
             msg.setWindowTitle("Error!")
@@ -492,8 +501,8 @@ class MainUI(MouseEvents, QWidget):
         )
 
         # 企业关键词输入框
-        self.search_entry = CustomLineEdit("请输入企业关键词...", self)
-        self.search_entry.setGeometry(50, 320, 200, 30)
+        self.keyword_entry = CustomLineEdit("请输入企业关键词...", self)
+        self.keyword_entry.setGeometry(50, 320, 200, 30)
 
         # 生成报告按钮
         self.go_button = QPushButton("生成报告", self)
@@ -501,7 +510,7 @@ class MainUI(MouseEvents, QWidget):
         self.go_button.setStyleSheet(
             "background-color: #0077ED; color: white; border: none; border-radius: 5px; font-size: 16px;"
         )
-        self.go_button.clicked.connect(self.on_go)
+        self.go_button.clicked.connect(self.generate_report)
 
         # 版本标签
         self.ver_label = QLabel("AstraGen - Demo 1.0", self)
@@ -519,46 +528,36 @@ class MainUI(MouseEvents, QWidget):
         )
 
     def center(self):
-        """
-        将窗口居中显示
-        """
         qr = self.frameGeometry()
         cp = QDesktopWidget().availableGeometry().center()
         qr.moveCenter(cp)
         self.move(qr.topLeft())
 
-    def on_go(self):
-        """
-        处理生成报告的逻辑：读取输入的企业关键词
-        """
-        keyword = self.search_entry.text().strip()
+    def generate_report(self):
+        keyword = self.keyword_entry.text().strip()
+
         if not keyword:
-            print("请输入有效的企业关键词！")
+            msg = MsgBox(self)
+            msg.setIcon(QMessageBox.Critical)
+            msg.setWindowTitle("Error!")
+            msg.setText("请输入有效的企业关键词!")
+            msg.show()
         else:
-            print(f"生成报告，企业关键词：{keyword}")
+            asyncio.run(qcc_clawler.run_agent(keyword))
 
     def on_help(self):
-        """
-        帮助按钮点击事件，目前仅输出提示信息
-        """
         print("帮助：将在后续版本解锁！")
 
     def on_setting(self):
-        """
-        配置按钮点击事件，目前仅输出提示信息
-        """
         print("配置：将在后续版本解锁！")
 
     def close_window(self):
-        """
-        点击退出按钮时，通过淡出动画退出应用
-        """
         FadeAnimations.fade_and_close(
             self, callback=lambda: QApplication.instance().quit())
 
 
+# 直接运行的底层逻辑
 if __name__ == "__main__":
-    # 创建并显示欢迎界面
-    welcome = WelcomeUI()
-    welcome.show()
+    start_window = WelcomeUI()
+    start_window.show()
     sys.exit(app.exec_())

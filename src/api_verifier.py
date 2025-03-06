@@ -18,10 +18,10 @@ def verify_deepseek_api():
 
     try:
         DeepSeek_V3.invoke("Test")
-        print("[Info] API KEY验证成功")
+        print("[Info] API KEY验证成功!")
         return DeepSeek_V3
     except Exception as e:
-        raise ValueError(f'[Error] API KEY验证失败: {str(e)}')
+        raise ValueError(f'[Error] API KEY验证失败: {str(e)}!')
 
 
 if __name__ == "__main__":
