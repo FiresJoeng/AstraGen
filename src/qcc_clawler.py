@@ -7,24 +7,23 @@ from dotenv import load_dotenv
 from pydantic import SecretStr
 
 
-load_dotenv()
+def get_deepseek_api_clients():
+    load_dotenv(override=True)
+    deepseek_api_key = os.getenv("DEEPSEEK_API_KEY", "")
+    if not deepseek_api_key:
+        raise ValueError('[Error] 请先在 ".env" 文件内设置 "DEEPSEEK_API_KEY"')
+    DeepSeek_V3 = ChatOpenAI(
+        base_url="https://api.deepseek.com/v1",
+        model="deepseek-chat",
+        api_key=SecretStr(deepseek_api_key),
+    )
+    DeepSeek_R1 = ChatOpenAI(
+        base_url="https://api.deepseek.com/v1",
+        model="deepseek-reasoner",
+        api_key=SecretStr(deepseek_api_key),
+    )
+    return DeepSeek_V3, DeepSeek_R1
 
-# 获取 DEEPSEEK_API_KEY
-deepseek_api_key = os.getenv("DEEPSEEK_API_KEY", "")
-if not deepseek_api_key:
-    raise ValueError('[Error] 请先在 ".env" 文件内设置 "DEEPSEEK_API_KEY"')
-
-DeepSeek_V3 = ChatOpenAI(
-    base_url="https://api.deepseek.com/v1",
-    model="deepseek-chat",
-    api_key=SecretStr(deepseek_api_key),
-)
-
-DeepSeek_R1 = ChatOpenAI(
-    base_url="https://api.deepseek.com/v1",
-    model="deepseek-reasoner",
-    api_key=SecretStr(deepseek_api_key),
-)
 
 # 定义浏览器上下文配置
 context_config = BrowserContextConfig(
@@ -55,7 +54,7 @@ def create_qcc_agent(keyword: str) -> Agent:
 6. 关闭浏览器。
 '''
 
-    # 在当前函数内创建 Controller，并定义操作函数，利用闭包捕获 keyword
+    # 创建 Controller，并利用闭包捕获 keyword
     controller = Controller()
 
     @controller.action("获取登录页面")
@@ -96,6 +95,9 @@ def create_qcc_agent(keyword: str) -> Agent:
     browser = Browser(config=browser_config)
     browser_context = BrowserContext(browser=browser, config=context_config)
 
+    # 获取最新的 DeepSeek API 客户端
+    DeepSeek_V3, _ = get_deepseek_api_clients()
+
     # 创建 Agent 实例
     qcc_agent = Agent(
         browser_context=browser_context,
@@ -121,7 +123,6 @@ async def run_agent(keyword: str):
             await qcc_agent.browser_context.browser.close()
         except Exception as e:
             print("[Error] 关闭浏览器时发生错误:", str(e))
-
 
 if __name__ == "__main__":
     try:
