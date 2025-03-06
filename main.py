@@ -442,7 +442,7 @@ class MainUI(MouseEvents, QWidget):
         self.setWindowIcon(QIcon("img/icon.ico"))
         # 设置窗口属性
         self.setWindowFlags(Qt.FramelessWindowHint)
-        self.setWindowTitle("MainWindow")
+        self.setWindowTitle("AstraGen - 银行信贷报告一键生成")
         self.setFixedSize(400, 600)
         self.setStyleSheet("background-color: black;")
         self.setWindowOpacity(0)
