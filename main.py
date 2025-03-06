@@ -1,11 +1,12 @@
 '''
 TODO:
-1. 修复弹窗逻辑问题，其中包括MsgBox的弹出位置问题和所有窗口弹出不在最前的问题。
+1. 修复所有窗口弹出不在最前的问题。
 2. 简化现有代码，将冗余的类封装进.py从外部调用。
 3. GeneratorWindow的设计。
-4. 预制“按钮”。
-5. qcc_clawler的调用错误捕获。
-6. go_button的禁用效果和重新启用。
+4. 增加预制按钮。
+5. 增加qcc_clawler的调用错误捕获。
+6. 制作go_button的禁用效果和重新启用效果。
+7. 修复生成时窗口无响应的问题。
 '''
 
 
@@ -178,16 +179,30 @@ class MsgBox(MouseEvents, QMessageBox):
         self.button(QMessageBox.Close).setStyleSheet(
             "min-width: 60px; border: 1px solid gray; border-radius: 1px;"
         )
+        
+        # 在初始化时设置位置
+        self.adjustSize()  # 确保窗口大小正确
+        self._center_window()
+
+    def _center_window(self):
+        """将窗口居中显示"""
+        if self.parent():
+            # 相对于父窗口居中
+            parent_geometry = self.parent().frameGeometry()
+            new_x = parent_geometry.center().x() - self.width() // 2
+            new_y = parent_geometry.center().y() - self.height() // 2
+        else:
+            # 相对于屏幕居中
+            screen_geometry = QDesktopWidget().availableGeometry()
+            new_x = screen_geometry.center().x() - self.width() // 2
+            new_y = screen_geometry.center().y() - self.height() // 2
+        self.move(new_x, new_y)
 
     def showEvent(self, event):
-        # 如果存在父窗口，将对话框移动到父窗口中心
-        if self.parent():
-            parent_geometry = self.parent().frameGeometry()
-            self_geometry = self.frameGeometry()
-            new_x = parent_geometry.center().x() - self_geometry.width() // 2
-            new_y = parent_geometry.center().y() - self_geometry.height() // 2
-            self.move(new_x, new_y)
+        """确保窗口显示时保持居中"""
         super().showEvent(event)
+        self._center_window()
+
 
 
 class WelcomeUI(MouseEvents, QWidget):
@@ -223,7 +238,7 @@ class WelcomeUI(MouseEvents, QWidget):
             (self.width() - self.welcome_label.width()) // 2, 50
         )
 
-        # 退出按钮，点击时通过fade_and_close退出应用
+        # 退出按钮
         self.exit_button = QPushButton("×", self)
         self.exit_button.setGeometry(350, 10, 30, 25)
         self.exit_button.setStyleSheet(
