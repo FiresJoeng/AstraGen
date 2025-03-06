@@ -44,63 +44,52 @@ class MouseEvents:
             self._offset = None
 
 
-def fade_in(widget, duration=200, start=0, end=0.75):
+class FadeAnimations:
     """
-    淡入动画：让widget的透明度从start变化到end
-
-    :param widget: 需要执行淡入动画的控件
-    :param duration: 动画持续时间（毫秒）
-    :param start: 起始透明度
-    :param end: 结束透明度
-    :return: 动画对象
+    封装淡入淡出动画的类
     """
-    animation = QPropertyAnimation(widget, b"windowOpacity")
-    animation.setDuration(duration)
-    animation.setStartValue(start)
-    animation.setEndValue(end)
-    animation.start()
-    widget._fade_in_animation = animation
-    return animation
+    @staticmethod
+    def fade_in(widget, duration=200, start=0, end=0.75):
+        """
+        淡入动画：让widget的透明度从start变化到end
+        """
+        animation = QPropertyAnimation(widget, b"windowOpacity")
+        animation.setDuration(duration)
+        animation.setStartValue(start)
+        animation.setEndValue(end)
+        animation.start()
+        widget._fade_in_animation = animation
+        return animation
 
+    @staticmethod
+    def fade_and_close(widget, callback=None, duration=200):
+        """
+        淡出并关闭窗口的动画
+        """
+        animation = QPropertyAnimation(widget, b"windowOpacity")
+        animation.setDuration(duration)
+        animation.setStartValue(widget.windowOpacity())
+        animation.setEndValue(0)
+        if callback:
+            animation.finished.connect(callback)
+        animation.finished.connect(lambda: QWidget.close(widget))
+        animation.start()
+        widget._fade_animation = animation
 
-def fade_and_close(widget, callback=None, duration=200):
-    """
-    淡出并关闭窗口的动画
-
-    :param widget: 需要关闭的窗口
-    :param callback: 动画结束后执行的回调函数
-    :param duration: 动画持续时间（毫秒）
-    """
-    animation = QPropertyAnimation(widget, b"windowOpacity")
-    animation.setDuration(duration)
-    animation.setStartValue(widget.windowOpacity())
-    animation.setEndValue(0)
-    if callback:
-        animation.finished.connect(callback)
-    # 动画结束后关闭窗口
-    animation.finished.connect(lambda: QWidget.close(widget))
-    animation.start()
-    widget._fade_animation = animation
-
-
-def fade_and_hide(widget, callback=None, duration=200):
-    """
-    淡出并隐藏窗口的动画
-
-    :param widget: 需要隐藏的窗口
-    :param callback: 动画结束后执行的回调函数
-    :param duration: 动画持续时间（毫秒）
-    """
-    animation = QPropertyAnimation(widget, b"windowOpacity")
-    animation.setDuration(duration)
-    animation.setStartValue(widget.windowOpacity())
-    animation.setEndValue(0)
-    if callback:
-        animation.finished.connect(callback)
-    # 动画结束后隐藏窗口
-    animation.finished.connect(widget.hide)
-    animation.start()
-    widget._fade_animation = animation
+    @staticmethod
+    def fade_and_hide(widget, callback=None, duration=200):
+        """
+        淡出并隐藏窗口的动画
+        """
+        animation = QPropertyAnimation(widget, b"windowOpacity")
+        animation.setDuration(duration)
+        animation.setStartValue(widget.windowOpacity())
+        animation.setEndValue(0)
+        if callback:
+            animation.finished.connect(callback)
+        animation.finished.connect(widget.hide)
+        animation.start()
+        widget._fade_animation = animation
 
 
 class MsgBox(MouseEvents, QMessageBox):
@@ -241,7 +230,7 @@ class WelcomeUI(MouseEvents, QWidget):
         self.verify_button.clicked.connect(self.go_verify)
 
         # 执行淡入动画显示窗口
-        fade_in(self)
+        FadeAnimations.fade_in(self)
 
     def center(self):
         """
@@ -278,13 +267,14 @@ class WelcomeUI(MouseEvents, QWidget):
                 self.connect_window = VerifyProgessBar(welcome_ui=self)
                 self.connect_window.show()
 
-            fade_and_hide(self, callback=after_fade)
+            FadeAnimations.fade_and_hide(self, callback=after_fade)
 
     def close_window(self):
         """
         点击退出按钮时，通过淡出动画退出应用
         """
-        fade_and_close(self, callback=lambda: QApplication.instance().quit())
+        FadeAnimations.fade_and_close(
+            self, callback=lambda: QApplication.instance().quit())
 
 
 class VerifyProgessBar(MouseEvents, QWidget):
@@ -339,7 +329,7 @@ class VerifyProgessBar(MouseEvents, QWidget):
         显示窗口时执行淡入动画，并启动第一个动画阶段
         """
         super().showEvent(event)
-        fade_in(self, start=0, end=0.75)
+        FadeAnimations.fade_in(self, start=0, end=0.75)
         QTimer.singleShot(0, self.start_first_animation)
 
     def start_first_animation(self):
@@ -366,7 +356,7 @@ class VerifyProgessBar(MouseEvents, QWidget):
             self.label.move((self.width() - self.label.width()) // 2, 50)
             self.start_second_animation()
         except Exception as e:
-            fade_and_close(
+            FadeAnimations.fade_and_close(
                 self, callback=lambda: self.on_verification_failed(str(e))
             )
 
@@ -400,7 +390,7 @@ class VerifyProgessBar(MouseEvents, QWidget):
         """
         淡出当前窗口，并启动主界面
         """
-        fade_and_close(self, callback=self.launch_main_ui)
+        FadeAnimations.fade_and_close(self, callback=self.launch_main_ui)
 
     def launch_main_ui(self):
         """
@@ -431,7 +421,7 @@ class MainUI(MouseEvents, QWidget):
         self.init_ui()
 
         # 执行淡入动画显示窗口
-        fade_in(self)
+        FadeAnimations.fade_in(self)
 
     def init_ui(self):
         """
@@ -556,7 +546,8 @@ class MainUI(MouseEvents, QWidget):
         """
         点击退出按钮时，通过淡出动画退出应用
         """
-        fade_and_close(self, callback=lambda: QApplication.instance().quit())
+        FadeAnimations.fade_and_close(
+            self, callback=lambda: QApplication.instance().quit())
 
 
 if __name__ == "__main__":
