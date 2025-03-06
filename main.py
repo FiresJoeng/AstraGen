@@ -4,10 +4,9 @@ TODO:
 2. 简化现有代码，将冗余的类封装进.py从外部调用。
 3. GeneratorWindow的设计。
 4. 增加预制按钮。
-5. 增加qcc_clawler的调用错误捕获。
-6. 制作go_button的禁用效果和重新启用效果。
-7. 修复生成时窗口无响应的问题。
-8. 弹出截图。
+5. 制作go_button的禁用效果和重新启用效果。
+6. 修复生成时窗口无响应的问题。
+7. 弹出截图。
 '''
 
 
@@ -561,6 +560,7 @@ class MainUI(MouseEvents, QWidget):
         else:
             try:
                 asyncio.run(qcc_clawler.run_agent(keyword))
+                docx_filler.generate_report(keyword)
             except Exception as e:
                 msg = MsgBox(self)
                 msg.setIcon(QMessageBox.Critical)
