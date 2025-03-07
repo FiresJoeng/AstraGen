@@ -26,7 +26,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtGui import QFont, QFontDatabase, QPixmap, QIcon
 from PyQt5.QtCore import Qt, QPropertyAnimation, QEasingCurve, QSize, QTimer
 from dotenv import load_dotenv, set_key, find_dotenv
-from src import api_verifier, qcc_clawler, docx_filler
+from src import *
 
 
 # 加载环境变量文件
@@ -564,7 +564,7 @@ class MainUI(MouseEvents, QWidget):
             msg.show()
         else:
             try:
-                asyncio.run(qcc_clawler.run_agent(keyword))
+                asyncio.run(qcc_crawler.run_agent(keyword))
                 docx_filler.generate_report(keyword)
             except Exception as e:
                 msg = MsgBox(self)

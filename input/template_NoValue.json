@@ -1,62 +1,201 @@
 {
-  "company_name": "",
-  "unified_social_credit_code": "",
-  "legal_representative": "",
-  "registration_status": "",
-  "establishment_date": "",
-  "phone": "",
-  "email": "",
-  "website": "",
-  "company_address": "",
-  "industry": "",
-  "company_size": "",
-  "employee_count": "",
-  "registered_capital": "",
-  "paid_in_capital": "",
-  "organization_code": "",
-  "business_license_number": "",
-  "tax_identification_number": "",
-  "taxpayer_qualification": "",
-  "company_type": "",
-  "business_term": "",
-  "personnel_size": "",
-  "participants_count": "",
-  "registered_address": "",
-  "registration_authority": "",
-  "region": "",
-  "international_industry": "",
-  "english_name": "",
-  "business_scope": "",
+  "company_name": "企业名称",
+  "registration_status": "登记状态",
+  "qichafen": "企查分",
+  "kechuangfen": "科创分",
+  "listing": "上市信息",
+  "high_tech_enterprise": "高新技术企业",
+  "unified_social_credit_code": "统一社会信用代码",
+  "legal_representative": {
+    "name": "法定代表人",
+    "associated_companies": "关联企业数量"
+  },
+  "registered_capital": "注册资本",
+  "establishment_date": "成立日期",
+  "phone": "联系电话",
+  "email": "邮箱",
+  "website": "官网",
+  "company_address": "经营地址",
+  "industry": "所属行业",
+  "company_size": "企业规模",
+  "employee_count": "员工人数",
+  "revenue": "营业收入",
+  "introduction": "企业简介",
+  "group": {
+    "name": "所属集团",
+    "member_companies": "成员企业",
+    "important_risks": "重要风险"
+  },
+  "investment_institutions": {
+    "name": "投资机构",
+    "investment_projects": "投资项目",
+    "investment_events": "投资事件"
+  },
+  "products": {
+    "name": "产品信息",
+    "financing_rounds": "战略融资轮次"
+  },
+  "bidding": {
+    "winning_bids": "中标数量",
+    "procurement": "招采数量"
+  },
+  "assets_clues": {
+    "clues": "财产线索",
+    "estimated_value": "预估价值"
+  },
+  "legal_risks": {
+    "self_risks": "自身风险",
+    "important_risks": "重点风险",
+    "associated_risks": "关联风险",
+    "historical_information": "历史信息",
+    "warning_information": "预警信息"
+  },
+  "financial_data": {
+    "revenue": {
+      "2024": "营业收入(2024)",
+      "2023": "营业收入(2023)",
+      "2022": "营业收入(2022)",
+      "2021": "营业收入(2021)",
+      "2020": "营业收入(2020)"
+    },
+    "net_profit": {
+      "2024": "净利润(2024)",
+      "2023": "净利润(2023)",
+      "2022": "净利润(2022)",
+      "2021": "净利润(2021)",
+      "2020": "净利润(2020)"
+    },
+    "total_assets": {
+      "2024": "总资产(2024)",
+      "2023": "总资产(2023)",
+      "2022": "总资产(2022)",
+      "2021": "总资产(2021)",
+      "2020": "总资产(2020)"
+    },
+    "total_liabilities": {
+      "2024_Q3": "总负债(2024)",
+      "2023": "总负债(2023)",
+      "2022": "总负债(2022)",
+      "2021": "总负债(2021)",
+      "2020": "总负债(2020)"
+    },
+    "shareholder_equity": {
+      "2024": "股东权益(2024)",
+      "2023": "股东权益(2023)",
+      "2022": "股东权益(2022)",
+      "2021": "股东权益(2021)",
+      "2020": "股东权益(2020)"
+    },
+    "cash_flow": {
+      "2024": "现金流(2024)",
+      "2023": "现金流(2023)",
+      "2022": "现金流(2022)",
+      "2021": "现金流(2021)",
+      "2020": "现金流(2020)"
+    }
+  },
   "shareholders": [
     {
-      "name": "",
-      "type": "",
-      "shareholding_ratio": "",
-      "subscribed_capital": "",
-      "subscription_date": "",
-      "indirect_shareholding_ratio": "",
-      "first_shareholding_date": ""
-    },
-    {
-      "name": "",
-      "type": "",
-      "shareholding_ratio": "",
-      "subscribed_capital": "",
-      "subscription_date": "",
-      "indirect_shareholding_ratio": "",
-      "first_shareholding_date": ""
+      "name": "股东名称",
+      "type": "股东类型",
+      "shareholding_ratio": "持股比例",
+      "subscribed_capital": "认缴资本",
+      "subscription_date": "认缴日期",
+      "paid_in_capital": "实缴资本",
+      "paid_in_date": "实缴日期",
+      "indirect_shareholding_ratio": "间接持股比例",
+      "first_shareholding_date": "首次持股日期"
     }
   ],
   "key_personnel": [
     {
-      "name": "",
-      "position": "",
-      "shareholding_ratio": ""
-    },
-    {
-      "name": "",
-      "position": "",
-      "shareholding_ratio": ""
+      "name": "姓名",
+      "position": "职务",
+      "shareholding_ratio": "持股比例"
     }
-  ]
+  ],
+  "external_investments": [
+    {
+      "company_name": "对外投资企业名称",
+      "status": "状态",
+      "establishment_date": "成立日期",
+      "shareholding_percentage": "持股比例",
+      "subscribed_capital": "认缴资本",
+      "region": "所在地区",
+      "industry": "所属行业"
+    }
+  ],
+  "controlled_companies": [
+    {
+      "company_name": "控制企业名称",
+      "status": "状态",
+      "establishment_date": "成立日期",
+      "region": "所在地区",
+      "industry": "所属行业",
+      "shareholding_percentage": "持股比例"
+    }
+  ],
+  "change_records": [
+    {
+      "change_date": "变更日期",
+      "change_item": "变更事项",
+      "before_change": "变更前",
+      "after_change": "变更后"
+    }
+  ],
+  "branches": [
+    {
+      "company_name": "分支机构名称",
+      "responsible_person": "负责人",
+      "region": "所在地区",
+      "establishment_date": "成立日期",
+      "status": "状态"
+    }
+  ],
+  "annual_reports": [
+    {
+      "year": "年份",
+      "report_date": "报告日期"
+    }
+  ],
+  "ultimate_beneficiaries": [
+    {
+      "name": "姓名",
+      "ultimate_benefit_percentage": "受益比例",
+      "benefit_type": "受益方式",
+      "position_type": "职务类型"
+    }
+  ],
+  "actual_controllers": [
+    {
+      "name": "姓名",
+      "direct_shareholding_percentage": "直接持股比例",
+      "voting_rights_percentage": "表决权比例"
+    }
+  ],
+  "cooperative_shareholders": [
+    {
+      "name": "协同股东名称",
+      "joint_shareholding_companies": "联合持股企业数量",
+      "joint_shareholding_companies_details": "联合持股企业明细"
+    }
+  ],
+  "suspected_relationships": [
+    {
+      "company_name": "疑似关联企业名称",
+      "status": "状态",
+      "legal_representative": "法定代表人",
+      "registered_capital": "注册资本",
+      "establishment_date": "成立日期",
+      "suspected_relationship_type": "疑似关联类型"
+    }
+  ],
+  "industry_analysis": {
+    "registered_capital": {
+      "national_comparison": "全国对比",
+      "provincial_comparison": "省内对比"
+    },
+    "market_entry_period": "市场进入时间",
+    "geographical_distribution": "地域分布"
+  }
 }
