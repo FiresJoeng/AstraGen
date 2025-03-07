@@ -1,5 +1,5 @@
 # AstraGen
-**星核 - 银行信贷报告一键填充**  
+**星核 - 银行信贷报告智能填充助手**  
 Require Python 3.11 or above.
 
 #### Recommended Python Version
