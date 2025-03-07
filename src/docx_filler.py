@@ -19,14 +19,14 @@ def load_json(json_path):
 
 def fill_docx(template_path, fill_data, output_path):
     if not os.path.exists(template_path):
-        raise FileNotFoundError(f"[Error] 模板文件不存在: {template_path}")
+        raise FileNotFoundError(f"[Error] 模板文件不存在: {template_path}!")
     try:
         doc = Document(template_path)
     except Exception as e:
-        raise ValueError(f"[Error]打开模板文件出错: {e}")
+        raise ValueError(f"[Error] 打开模板文件出错: {e}!")
 
     if not isinstance(fill_data, dict):
-        raise TypeError("[Error] fill_data 必须为字典类型。")
+        raise TypeError("[Error] fill_data 必须为字典类型.")
 
     # 文本段落处理
     for para in doc.paragraphs:
@@ -50,12 +50,12 @@ def fill_docx(template_path, fill_data, output_path):
     try:
         doc.save(output_path)
     except Exception as e:
-        raise IOError(f"[Error] 保存文档到 {output_path} 出错: {e}")
+        raise IOError(f"[Error] 保存文档到 {output_path} 出错: {e}!")
 
 
 def generate_report(keyword, template='input/template.docx', output_dir='output'):
     if not keyword:
-        raise ValueError("[Error] 企业名称不能为空，你是怎么做到的？")
+        raise ValueError("[Error] 企业名称不能为空, 你是怎么做到的?")
     json_path = os.path.join(output_dir, f"{keyword}.json")
     fill_data = load_json(json_path)
 
@@ -70,8 +70,8 @@ if __name__ == "__main__":
     try:
         keyword = input("文件名 (无后缀) > ").strip()
         if not keyword:
-            raise ValueError("[Error] 文件名不能为空！")
+            raise ValueError("[Error] 文件名不能为空!")
         test_result = generate_report(keyword)
         print(str(test_result))
     except Exception as e:
-        print("[Error] 程序出现错误:", str(e))
+        print("[Error] 程序出现错误: ", str(e))
