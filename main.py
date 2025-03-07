@@ -185,7 +185,7 @@ class MsgBox(MouseEvents, QMessageBox):
         self.button(QMessageBox.Close).setStyleSheet(
             "min-width: 60px; border: 1px solid gray; border-radius: 1px;"
         )
-        
+
         # 在初始化时设置位置
         self.adjustSize()  # 确保窗口大小正确
         self._center_window()
@@ -208,7 +208,6 @@ class MsgBox(MouseEvents, QMessageBox):
         """确保窗口显示时保持居中"""
         super().showEvent(event)
         self._center_window()
-
 
 
 class WelcomeUI(MouseEvents, QWidget):
