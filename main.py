@@ -28,7 +28,6 @@ from PyQt5.QtCore import Qt, QPropertyAnimation, QEasingCurve, QSize, QTimer
 from dotenv import load_dotenv, set_key, find_dotenv
 from src import *
 
-
 # 加载环境变量文件
 load_dotenv()
 
@@ -44,7 +43,42 @@ else:
     font_family = "Arial"
 
 
-# 鼠标左键可拖动窗口
+# 预制按钮类
+class BlueButton(QPushButton):
+    """
+    蓝色预制按钮，适用于验证按钮和生成报告按钮
+    """
+
+    def __init__(self, text, parent=None):
+        super().__init__(text, parent)
+        self.setStyleSheet(
+            "background-color: #0077ED; color: white; border: none; border-radius: 5px; font-size: 16px;"
+        )
+
+
+class LiteButton(QPushButton):
+    """
+    轻量预制按钮，用于主界面右上角的配置、帮助和退出按钮
+    """
+    default_style = """
+    QPushButton {
+        background-color: transparent;
+        color: white;
+        border: none;
+        text-decoration: underline;
+        font-size: 16px;
+    }
+    QPushButton:hover {
+        color: #0077ED;
+    }
+    """
+
+    def __init__(self, text, parent=None):
+        super().__init__(text, parent)
+        self.setStyleSheet(LiteButton.default_style)
+
+
+# 鼠标拖动窗口
 class MouseEvents:
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
@@ -122,7 +156,7 @@ class FadeAnimations:
 
 
 # 预制 输入框
-class CustomLineEdit(QLineEdit):
+class EntryBox(QLineEdit):
     def __init__(self, placeholder, parent=None):
         super().__init__(parent)
         self.setPlaceholderText(placeholder)
@@ -210,6 +244,7 @@ class MsgBox(MouseEvents, QMessageBox):
         self._center_window()
 
 
+# 欢迎界面
 class WelcomeUI(MouseEvents, QWidget):
     """
     欢迎界面，包含API KEY输入和验证逻辑
@@ -252,17 +287,14 @@ class WelcomeUI(MouseEvents, QWidget):
         self.exit_button.clicked.connect(self.close_window)
 
         # API KEY输入框
-        self.api_entry = CustomLineEdit("请输入DeepSeek的API KEY", self)
+        self.api_entry = EntryBox("请输入DeepSeek的API KEY", self)
         self.api_entry.setGeometry(50, 100, 200, 30)
         api_key = os.getenv("DEEPSEEK_API_KEY", "")
         self.api_entry.setText(api_key)
 
-        # 验证按钮
-        self.verify_button = QPushButton("验证", self)
+        # 验证按钮（使用BlueButton预制类）
+        self.verify_button = BlueButton("验证", self)
         self.verify_button.setGeometry(270, 100, 80, 30)
-        self.verify_button.setStyleSheet(
-            "background-color: #0077ED; color: white; border: none; border-radius: 5px;"
-        )
         self.verify_button.clicked.connect(self.show_verifing)
 
         # 执行淡入动画显示窗口
@@ -313,6 +345,7 @@ class WelcomeUI(MouseEvents, QWidget):
             self, callback=lambda: QApplication.instance().quit())
 
 
+# 验证进度条界面
 class VerifyProgessBar(MouseEvents, QWidget):
     """
     验证进度条界面：
@@ -436,6 +469,7 @@ class VerifyProgessBar(MouseEvents, QWidget):
         main_ui.show()
 
 
+# 主界面
 class MainUI(MouseEvents, QWidget):
     """
     主界面，包含配置、帮助、退出等按钮，以及报告生成的入口
@@ -463,35 +497,19 @@ class MainUI(MouseEvents, QWidget):
         """
         初始化主界面的所有控件
         """
-        top_button_style = """
-        QPushButton {
-            background-color: transparent;
-            color: white;
-            border: none;
-            text-decoration: underline;
-            font-size: 16px;
-        }
-        QPushButton:hover {
-            color: #0077ED;
-        }
-        """
-
-        # 配置按钮
-        self.setting_button = QPushButton("配置", self)
+        # 配置按钮（使用LiteButton预制类）
+        self.setting_button = LiteButton("配置", self)
         self.setting_button.setGeometry(160, 10, 75, 30)
-        self.setting_button.setStyleSheet(top_button_style)
         self.setting_button.clicked.connect(self.on_setting)
 
-        # 帮助按钮
-        self.help_button = QPushButton("帮助", self)
+        # 帮助按钮（使用LiteButton预制类）
+        self.help_button = LiteButton("帮助", self)
         self.help_button.setGeometry(240, 10, 75, 30)
-        self.help_button.setStyleSheet(top_button_style)
         self.help_button.clicked.connect(self.on_help)
 
-        # 退出按钮，点击时通过fade_and_close退出应用
-        self.exit_button = QPushButton("退出", self)
+        # 退出按钮（使用LiteButton预制类），点击时通过fade_and_close退出应用
+        self.exit_button = LiteButton("退出", self)
         self.exit_button.setGeometry(320, 10, 75, 30)
-        self.exit_button.setStyleSheet(top_button_style)
         self.exit_button.clicked.connect(self.close_window)
 
         # 图形视图，显示图标
@@ -521,15 +539,12 @@ class MainUI(MouseEvents, QWidget):
         )
 
         # 企业关键词输入框
-        self.keyword_entry = CustomLineEdit("请输入企业关键词...", self)
+        self.keyword_entry = EntryBox("请输入企业关键词...", self)
         self.keyword_entry.setGeometry(50, 320, 200, 30)
 
-        # 生成报告按钮
-        self.go_button = QPushButton("生成报告", self)
+        # 生成报告按钮（使用BlueButton预制类）
+        self.go_button = BlueButton("生成报告", self)
         self.go_button.setGeometry(270, 320, 80, 30)
-        self.go_button.setStyleSheet(
-            "background-color: #0077ED; color: white; border: none; border-radius: 5px; font-size: 16px;"
-        )
         self.go_button.clicked.connect(self.generate_report)
 
         # 版本标签
@@ -570,7 +585,7 @@ class MainUI(MouseEvents, QWidget):
                 msg = MsgBox(self)
                 msg.setIcon(QMessageBox.Critical)
                 msg.setWindowTitle("Error!")
-                msg.setText("发生了一个致命错误: "+str(e))
+                msg.setText("发生了一个致命错误: " + str(e))
                 msg.show()
 
     def on_help(self):
