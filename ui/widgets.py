@@ -1,16 +1,18 @@
-from PyQt5.QtWidgets import QPushButton, QLineEdit, QMessageBox, QDesktopWidget
+from PyQt5.QtWidgets import QPushButton, QLineEdit, QMessageBox
 from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import Qt
+
 
 class BlueButton(QPushButton):
     """
     蓝色预制按钮，适用于验证按钮和生成报告按钮
     """
+
     def __init__(self, text, parent=None):
         super().__init__(text, parent)
         self.setStyleSheet(
             "background-color: #0077ED; color: white; border: none; border-radius: 5px; font-size: 16px;"
         )
+
 
 class EntryBox(QLineEdit):
     def __init__(self, placeholder, parent=None):
@@ -56,6 +58,7 @@ class EntryBox(QLineEdit):
                 )
         super().leaveEvent(event)
 
+
 class LiteButton(QPushButton):
     """
     轻量预制按钮，用于主界面右上角的配置、帮助和退出按钮
@@ -77,11 +80,12 @@ class LiteButton(QPushButton):
         super().__init__(text, parent)
         self.setStyleSheet(LiteButton.default_style)
 
+
 class MsgBox(QMessageBox):
     def __init__(self, parent=None):
         super().__init__(parent)
         # 设置窗口图标
-        self.setWindowIcon(QIcon("img/icon.ico"))
+        self.setWindowIcon(QIcon("img/icon_black.ico"))
         # 设置对话框样式
         self.setStyleSheet("background-color: white; color: black;")
         self.setStandardButtons(QMessageBox.Close)
@@ -96,6 +100,7 @@ class MsgBox(QMessageBox):
 
     def _center_window(self):
         """将窗口居中显示"""
+        from PyQt5.QtWidgets import QDesktopWidget
         if self.parent():
             parent_geometry = self.parent().frameGeometry()
             new_x = parent_geometry.center().x() - self.width() // 2

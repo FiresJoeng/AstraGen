@@ -1,11 +1,13 @@
-from PyQt5.QtCore import QPropertyAnimation, QEasingCurve, Qt
+from PyQt5.QtCore import QPropertyAnimation, Qt
 from PyQt5.QtWidgets import QWidget
+from PyQt5.QtGui import QFont, QFontDatabase
+
 
 class FadeAnimations:
     @staticmethod
     def fade_in(widget, duration=200, start=0, end=0.75):
         """
-        淡入动画：让widget的透明度从start变化到end
+        淡入动画：让 widget 的透明度从 start 变化到 end
         """
         animation = QPropertyAnimation(widget, b"windowOpacity")
         animation.setDuration(duration)
@@ -58,6 +60,7 @@ class FadeAnimations:
         animation.start()
         widget._fade_animation = animation
 
+
 class MouseEvents:
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
@@ -73,3 +76,18 @@ class MouseEvents:
         if event.button() == Qt.LeftButton:
             # 重置偏移量
             self._offset = None
+
+
+class FontLoader:
+    @staticmethod
+    def load_font(app, font_path, fallback="Arial"):
+        """
+        加载自定义字体，若加载失败则使用 fallback 字体
+        """
+        font_id = QFontDatabase.addApplicationFont(font_path)
+        if font_id != -1:
+            font_family = QFontDatabase.applicationFontFamilies(font_id)[0]
+            app.setFont(QFont(font_family))
+        else:
+            print("[Error] 加载自定义字体失败！")
+            app.setFont(QFont(fallback))

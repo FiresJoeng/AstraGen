@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import (
     QApplication, QWidget, QLabel, QPushButton, QDesktopWidget, QGraphicsView,
     QGraphicsScene, QGraphicsPixmapItem
 )
-from PyQt5.QtGui import QIcon, QPixmap
+from PyQt5.QtGui import QIcon, QPixmap, QFont
 from PyQt5.QtCore import Qt, QPropertyAnimation, QEasingCurve, QSize, QTimer
 from dotenv import set_key, find_dotenv
 from src import *
@@ -13,10 +13,12 @@ from ui.controls import FadeAnimations, MouseEvents
 
 # 按类名首字母排序
 
+
 class MainUI(MouseEvents, QWidget):
     """
     主界面，包含配置、帮助、退出等按钮，以及报告生成的入口
     """
+
     def __init__(self):
         super().__init__()
         self.setWindowIcon(QIcon("img/icon.ico"))
@@ -54,14 +56,17 @@ class MainUI(MouseEvents, QWidget):
         # 图形视图，显示图标
         self.graphicsView = QGraphicsView(self)
         self.graphicsView.setGeometry(140, 100, 128, 128)
-        self.graphicsView.setStyleSheet("background-color: transparent; border: none;")
+        self.graphicsView.setStyleSheet(
+            "background-color: transparent; border: none;")
         scene = QGraphicsScene(self)
         pixmap = QPixmap("img/icon.png")
         if not pixmap.isNull():
             item = QGraphicsPixmapItem(pixmap)
             scene.addItem(item)
-            item.setPos((self.graphicsView.width() - pixmap.width()) / 2,
-                        (self.graphicsView.height() - pixmap.height()) / 2)
+            item.setPos(
+                (self.graphicsView.width() - pixmap.width()) / 2,
+                (self.graphicsView.height() - pixmap.height()) / 2
+            )
         else:
             print("[Error] icon.png 加载失败！")
         self.graphicsView.setScene(scene)
@@ -70,7 +75,8 @@ class MainUI(MouseEvents, QWidget):
         self.title_label = QLabel("AstraGen - 星核", self)
         self.title_label.setStyleSheet("color: white; font-size: 32px;")
         self.title_label.adjustSize()
-        self.title_label.move((self.width() - self.title_label.width()) // 2, 250)
+        self.title_label.move(
+            (self.width() - self.title_label.width()) // 2, 250)
 
         # 企业关键词输入框（使用 EntryBox 预制类）
         self.keyword_entry = EntryBox("请输入企业关键词...", self)
@@ -88,10 +94,12 @@ class MainUI(MouseEvents, QWidget):
         self.ver_label.move((self.width() - self.ver_label.width()) // 2, 560)
 
         # 项目仓库链接标签
-        self.repo_label = QLabel("https://github.com/FiresJoeng/AstraGen", self)
+        self.repo_label = QLabel(
+            "https://github.com/FiresJoeng/AstraGen", self)
         self.repo_label.setStyleSheet("color: white;")
         self.repo_label.adjustSize()
-        self.repo_label.move((self.width() - self.repo_label.width()) // 2, 580)
+        self.repo_label.move(
+            (self.width() - self.repo_label.width()) // 2, 580)
 
     def showEvent(self, event):
         super().showEvent(event)
@@ -132,13 +140,15 @@ class MainUI(MouseEvents, QWidget):
         msg.show()
 
     def close_window(self):
-        FadeAnimations.fade_and_close(self, callback=lambda: QApplication.instance().quit())
+        FadeAnimations.fade_and_close(
+            self, callback=lambda: QApplication.instance().quit())
 
 
 class VerifyProgessBar(MouseEvents, QWidget):
     """
     验证进度条界面：显示连接至服务器的状态，并执行验证逻辑
     """
+
     def __init__(self, welcome_ui):
         super().__init__(None)
         self.welcome_ui = welcome_ui
@@ -161,7 +171,8 @@ class VerifyProgessBar(MouseEvents, QWidget):
             "border: 2px solid white; border-radius: 5px; background-color: transparent;"
         )
         self.progress_fill = QWidget(self.progress_container)
-        self.progress_fill.setStyleSheet("background-color: #0077ED; border: none;")
+        self.progress_fill.setStyleSheet(
+            "background-color: #0077ED; border: none;")
         self.progress_fill.setGeometry(2, 2, 0, 16)
         self.first_target_width = int(296 * 0.4)
 
@@ -229,8 +240,9 @@ class VerifyProgessBar(MouseEvents, QWidget):
 
 class WelcomeUI(MouseEvents, QWidget):
     """
-    欢迎界面，包含API KEY输入和验证逻辑
+    欢迎界面，包含 API KEY 输入和验证逻辑
     """
+
     def __init__(self, center_point=None):
         super().__init__()
         self.setWindowIcon(QIcon("img/icon.ico"))
@@ -247,14 +259,17 @@ class WelcomeUI(MouseEvents, QWidget):
             self.center()
 
         self.welcome_label = QLabel("欢迎使用 - AstraGen 星核", self)
+        # 使用全局字体，保证加载自定义字体后的字体被应用
+        self.welcome_label.setFont(
+            QFont(QApplication.instance().font().family(), 14))
         self.welcome_label.setStyleSheet("color: white;")
         self.welcome_label.setAlignment(Qt.AlignCenter)
         self.welcome_label.adjustSize()
-        self.welcome_label.move((self.width() - self.welcome_label.width()) // 2, 50)
+        self.welcome_label.move(
+            (self.width() - self.welcome_label.width()) // 2, 50)
 
-        self.exit_button = QPushButton("×", self)
+        self.exit_button = LiteButton("×", self)
         self.exit_button.setGeometry(350, 10, 30, 25)
-        self.exit_button.setStyleSheet("background-color: transparent; color: white; border: none;")
         self.exit_button.clicked.connect(self.close_window)
 
         self.api_entry = EntryBox("请输入DeepSeek的API KEY", self)
@@ -301,4 +316,5 @@ class WelcomeUI(MouseEvents, QWidget):
             FadeAnimations.fade_and_hide(self, callback=after_fade)
 
     def close_window(self):
-        FadeAnimations.fade_and_close(self, callback=lambda: QApplication.instance().quit())
+        FadeAnimations.fade_and_close(
+            self, callback=lambda: QApplication.instance().quit())
