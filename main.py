@@ -21,14 +21,15 @@ from PyQt5.QtWidgets import QApplication
 from dotenv import load_dotenv
 from ui import *
 
-# 加载环境变量文件
+
 load_dotenv()
 
 app = QApplication(sys.argv)
 controls.FontLoader.load_font(
     app, font_path="fonts/SarasaMonoSC-Light.ttf", fallback="Arial")
 
-# 创建并显示欢迎界面
+
+# 底层运行逻辑
 if __name__ == "__main__":
     start_window = windows.WelcomeUI()
     controls.FadeAnimations.fade_and_show(start_window)
