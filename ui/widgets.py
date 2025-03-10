@@ -3,10 +3,6 @@ from PyQt5.QtGui import QIcon
 
 
 class BlueButton(QPushButton):
-    """
-    蓝色预制按钮，适用于验证按钮和生成报告按钮
-    """
-
     def __init__(self, text, parent=None):
         super().__init__(text, parent)
         self.setStyleSheet(
@@ -60,9 +56,6 @@ class EntryBox(QLineEdit):
 
 
 class LiteButton(QPushButton):
-    """
-    轻量预制按钮，用于主界面右上角的配置、帮助和退出按钮
-    """
     default_style = """
     QPushButton {
         background-color: transparent;
@@ -95,11 +88,10 @@ class MsgBox(QMessageBox):
             "min-width: 60px; border: 1px solid gray; border-radius: 1px;"
         )
         # 在初始化时设置位置
-        self.adjustSize()  # 确保窗口大小正确
+        self.adjustSize()
         self._center_window()
 
     def _center_window(self):
-        """将窗口居中显示"""
         from PyQt5.QtWidgets import QDesktopWidget
         if self.parent():
             parent_geometry = self.parent().frameGeometry()

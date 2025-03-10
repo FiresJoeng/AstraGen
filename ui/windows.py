@@ -1,8 +1,8 @@
 import asyncio
 import os
 from PyQt5.QtWidgets import (
-    QApplication, QWidget, QLabel, QPushButton, QDesktopWidget, QGraphicsView,
-    QGraphicsScene, QGraphicsPixmapItem
+    QApplication, QWidget, QLabel, QDesktopWidget, QGraphicsView,
+    QGraphicsScene, QGraphicsPixmapItem, QMessageBox
 )
 from PyQt5.QtGui import QIcon, QPixmap, QFont
 from PyQt5.QtCore import Qt, QPropertyAnimation, QEasingCurve, QSize, QTimer
@@ -10,8 +10,6 @@ from dotenv import set_key, find_dotenv
 from src import *
 from ui.widgets import BlueButton, LiteButton, EntryBox, MsgBox
 from ui.controls import FadeAnimations, MouseEvents
-
-# 按类名首字母排序
 
 
 class MainUI(MouseEvents, QWidget):
@@ -38,22 +36,22 @@ class MainUI(MouseEvents, QWidget):
         self.move(qr.topLeft())
 
     def init_ui(self):
-        # 配置按钮（使用 LiteButton 预制类）
+        # 配置按钮
         self.setting_button = LiteButton("配置", self)
         self.setting_button.setGeometry(160, 10, 75, 30)
         self.setting_button.clicked.connect(self.on_setting)
 
-        # 帮助按钮（使用 LiteButton 预制类）
+        # 帮助按钮
         self.help_button = LiteButton("帮助", self)
         self.help_button.setGeometry(240, 10, 75, 30)
         self.help_button.clicked.connect(self.on_help)
 
-        # 退出按钮（使用 LiteButton 预制类）
+        # 退出按钮
         self.exit_button = LiteButton("退出", self)
         self.exit_button.setGeometry(320, 10, 75, 30)
         self.exit_button.clicked.connect(self.close_window)
 
-        # 图形视图，显示图标
+        # 图形视图
         self.graphicsView = QGraphicsView(self)
         self.graphicsView.setGeometry(140, 100, 128, 128)
         self.graphicsView.setStyleSheet(
@@ -78,11 +76,11 @@ class MainUI(MouseEvents, QWidget):
         self.title_label.move(
             (self.width() - self.title_label.width()) // 2, 250)
 
-        # 企业关键词输入框（使用 EntryBox 预制类）
+        # 企业关键词输入框
         self.keyword_entry = EntryBox("请输入企业关键词...", self)
         self.keyword_entry.setGeometry(50, 320, 200, 30)
 
-        # 生成报告按钮（使用 BlueButton 预制类）
+        # 生成报告按钮
         self.go_button = BlueButton("生成报告", self)
         self.go_button.setGeometry(270, 320, 80, 30)
         self.go_button.clicked.connect(self.generate_report)
@@ -110,7 +108,7 @@ class MainUI(MouseEvents, QWidget):
         keyword = self.keyword_entry.text().strip()
         if not keyword:
             msg = MsgBox(self)
-            msg.setIcon(QLabel.Critical)
+            msg.setIcon(QMessageBox.Critical)
             msg.setWindowTitle("Error!")
             msg.setText("请输入有效的企业关键词!")
             msg.show()
@@ -120,21 +118,21 @@ class MainUI(MouseEvents, QWidget):
                 docx_filler.generate_report(keyword)
             except Exception as e:
                 msg = MsgBox(self)
-                msg.setIcon(QLabel.Critical)
+                msg.setIcon(QMessageBox.Critical)
                 msg.setWindowTitle("Error!")
                 msg.setText("发生了一个致命错误: " + str(e))
                 msg.show()
 
     def on_help(self):
         msg = MsgBox(self)
-        msg.setIcon(QLabel.Information)
+        msg.setIcon(QMessageBox.Information)
         msg.setWindowTitle("帮助")
         msg.setText("帮助：将在后续版本解锁！")
         msg.show()
 
     def on_setting(self):
         msg = MsgBox(self)
-        msg.setIcon(QLabel.Information)
+        msg.setIcon(QMessageBox.Information)
         msg.setWindowTitle("配置")
         msg.setText("配置：将在后续版本解锁！")
         msg.show()
@@ -214,7 +212,7 @@ class VerifyProgessBar(MouseEvents, QWidget):
         if self.welcome_ui:
             FadeAnimations.fade_and_show(self.welcome_ui)
             msg = MsgBox(self.welcome_ui)
-            msg.setIcon(QLabel.Critical)
+            msg.setIcon(QMessageBox.Critical)
             msg.setWindowTitle("Error!")
             msg.setText(error_message)
             msg.show()
@@ -298,7 +296,7 @@ class WelcomeUI(MouseEvents, QWidget):
         api_key = self.api_entry.text().strip()
         if not api_key:
             msg = MsgBox(self)
-            msg.setIcon(QLabel.Critical)
+            msg.setIcon(QMessageBox.Critical)
             msg.setWindowTitle("Error!")
             msg.setText("非法的输入内容!")
             msg.show()

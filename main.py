@@ -15,6 +15,7 @@ TODO:
 8. 清除代码冗余部分，然后格式化，使其符合PEP 8标准。
 '''
 
+
 import sys
 from PyQt5.QtWidgets import QApplication
 from dotenv import load_dotenv
@@ -24,7 +25,8 @@ from ui import *
 load_dotenv()
 
 app = QApplication(sys.argv)
-controls.FontLoader.load_font(app, font_path="fonts/SarasaMonoSC-Light.ttf", fallback="Arial")
+controls.FontLoader.load_font(
+    app, font_path="fonts/SarasaMonoSC-Light.ttf", fallback="Arial")
 
 # 创建并显示欢迎界面
 if __name__ == "__main__":
