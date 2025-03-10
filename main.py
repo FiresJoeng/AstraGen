@@ -309,6 +309,11 @@ class WelcomeUI(MouseEvents, QWidget):
         qr.moveCenter(cp)
         self.move(qr.topLeft())
 
+    def showEvent(self, event):
+        super().showEvent(event)
+        self.raise_()
+        self.activateWindow()
+
     def show_verifing(self):
         """
         API KEY验证逻辑：
@@ -395,10 +400,9 @@ class VerifyProgessBar(MouseEvents, QWidget):
         self.move(qr.topLeft())
 
     def showEvent(self, event):
-        """
-        显示窗口时执行淡入动画，并启动第一个动画阶段
-        """
         super().showEvent(event)
+        self.raise_()
+        self.activateWindow()
         FadeAnimations.fade_in(self, start=0, end=0.75)
         QTimer.singleShot(0, self.start_first_animation)
 
@@ -568,6 +572,11 @@ class MainUI(MouseEvents, QWidget):
         qr.moveCenter(cp)
         self.move(qr.topLeft())
 
+    def showEvent(self, event):
+        super().showEvent(event)
+        self.raise_()
+        self.activateWindow()
+
     def generate_report(self):
         keyword = self.keyword_entry.text().strip()
 
@@ -589,10 +598,18 @@ class MainUI(MouseEvents, QWidget):
                 msg.show()
 
     def on_help(self):
-        print("帮助：将在后续版本解锁！")
+        msg = MsgBox(self)
+        msg.setIcon(QMessageBox.Information)
+        msg.setWindowTitle("帮助")
+        msg.setText("帮助：将在后续版本解锁！")
+        msg.show()
 
     def on_setting(self):
-        print("配置：将在后续版本解锁！")
+        msg = MsgBox(self)
+        msg.setIcon(QMessageBox.Information)
+        msg.setWindowTitle("配置")
+        msg.setText("配置：将在后续版本解锁！")
+        msg.show()
 
     def close_window(self):
         FadeAnimations.fade_and_close(
@@ -602,5 +619,5 @@ class MainUI(MouseEvents, QWidget):
 # 直接运行的底层逻辑
 if __name__ == "__main__":
     start_window = WelcomeUI()
-    start_window.show()
+    FadeAnimations.fade_and_show(start_window)
     sys.exit(app.exec_())
