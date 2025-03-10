@@ -28,6 +28,10 @@ from PyQt5.QtCore import Qt, QPropertyAnimation, QEasingCurve, QSize, QTimer
 from dotenv import load_dotenv, set_key, find_dotenv
 from src import *
 
+# 从 UI 模块中导入封装后的控件与辅助类
+from ui.widgets import BlueButton, LiteButton, EntryBox, MsgBox
+from ui.controls import FadeAnimations, MouseEvents
+
 # 加载环境变量文件
 load_dotenv()
 
@@ -43,213 +47,11 @@ else:
     font_family = "Arial"
 
 
-# 预制按钮类
-class BlueButton(QPushButton):
-    """
-    蓝色预制按钮，适用于验证按钮和生成报告按钮
-    """
-
-    def __init__(self, text, parent=None):
-        super().__init__(text, parent)
-        self.setStyleSheet(
-            "background-color: #0077ED; color: white; border: none; border-radius: 5px; font-size: 16px;"
-        )
-
-
-class LiteButton(QPushButton):
-    """
-    轻量预制按钮，用于主界面右上角的配置、帮助和退出按钮
-    """
-    default_style = """
-    QPushButton {
-        background-color: transparent;
-        color: white;
-        border: none;
-        text-decoration: underline;
-        font-size: 16px;
-    }
-    QPushButton:hover {
-        color: #0077ED;
-    }
-    """
-
-    def __init__(self, text, parent=None):
-        super().__init__(text, parent)
-        self.setStyleSheet(LiteButton.default_style)
-
-
-# 鼠标拖动窗口
-class MouseEvents:
-    def mousePressEvent(self, event):
-        if event.button() == Qt.LeftButton:
-            # 记录鼠标点击时相对于窗口的偏移量
-            self._offset = event.globalPos() - self.pos()
-
-    def mouseMoveEvent(self, event):
-        if hasattr(self, "_offset") and event.buttons() == Qt.LeftButton:
-            # 拖动窗口
-            self.move(event.globalPos() - self._offset)
-
-    def mouseReleaseEvent(self, event):
-        if event.button() == Qt.LeftButton:
-            # 重置偏移量
-            self._offset = None
-
-
-# 淡入淡出动画
-class FadeAnimations:
-    @staticmethod
-    def fade_in(widget, duration=200, start=0, end=0.75):
-        """
-        淡入动画：让widget的透明度从start变化到end
-        """
-        animation = QPropertyAnimation(widget, b"windowOpacity")
-        animation.setDuration(duration)
-        animation.setStartValue(start)
-        animation.setEndValue(end)
-        animation.start()
-        widget._fade_in_animation = animation
-        return animation
-
-    @staticmethod
-    def fade_and_close(widget, callback=None, duration=200):
-        """
-        淡出并关闭窗口的动画
-        """
-        animation = QPropertyAnimation(widget, b"windowOpacity")
-        animation.setDuration(duration)
-        animation.setStartValue(widget.windowOpacity())
-        animation.setEndValue(0)
-        if callback:
-            animation.finished.connect(callback)
-        animation.finished.connect(lambda: QWidget.close(widget))
-        animation.start()
-        widget._fade_animation = animation
-
-    @staticmethod
-    def fade_and_show(widget, duration=200):
-        """
-        淡入并显示窗口的动画
-        """
-        widget.show()
-        animation = QPropertyAnimation(widget, b"windowOpacity")
-        animation.setDuration(duration)
-        animation.setStartValue(0)
-        animation.setEndValue(0.75)
-        animation.start()
-        widget._fade_animation = animation
-
-    @staticmethod
-    def fade_and_hide(widget, callback=None, duration=200):
-        """
-        淡出并隐藏窗口的动画
-        """
-        animation = QPropertyAnimation(widget, b"windowOpacity")
-        animation.setDuration(duration)
-        animation.setStartValue(widget.windowOpacity())
-        animation.setEndValue(0)
-        if callback:
-            animation.finished.connect(callback)
-        animation.finished.connect(widget.hide)
-        animation.start()
-        widget._fade_animation = animation
-
-
-# 预制 输入框
-class EntryBox(QLineEdit):
-    def __init__(self, placeholder, parent=None):
-        super().__init__(parent)
-        self.setPlaceholderText(placeholder)
-        self.setStyleSheet(
-            "color: grey; border: 2px solid #d9d9d9; background-color: white; border-radius: 5px;"
-        )
-
-    def focusInEvent(self, event):
-        # 聚焦时改变样式
-        self.setStyleSheet(
-            "color: black; border: 2px solid #0077ED; background-color: white; border-radius: 5px;"
-        )
-        super().focusInEvent(event)
-
-    def focusOutEvent(self, event):
-        # 失焦时根据是否有文本内容改变样式
-        if not self.text():
-            self.setStyleSheet(
-                "color: grey; border: 2px solid #d9d9d9; background-color: white; border-radius: 5px;"
-            )
-        else:
-            self.setStyleSheet(
-                "color: black; border: 2px solid #d9d9d9; background-color: white; border-radius: 5px;"
-            )
-        super().focusOutEvent(event)
-
-    def enterEvent(self, event):
-        # 鼠标进入时改变样式（未聚焦）
-        if not self.hasFocus():
-            self.setStyleSheet(
-                "color: grey; border: 2px solid black; background-color: #f9f9f9; border-radius: 5px;"
-            )
-        super().enterEvent(event)
-
-    def leaveEvent(self, event):
-        # 鼠标离开时恢复原始样式
-        if not self.hasFocus():
-            if not self.text():
-                self.setStyleSheet(
-                    "color: grey; border: 2px solid #d9d9d9; background-color: white; border-radius: 5px;"
-                )
-            else:
-                self.setStyleSheet(
-                    "color: black; border: 2px solid #d9d9d9; background-color: white; border-radius: 5px;"
-                )
-        super().leaveEvent(event)
-
-
-# 预制 消息弹窗
-class MsgBox(MouseEvents, QMessageBox):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        # 设置窗口图标
-        self.setWindowIcon(QIcon("img/icon.ico"))
-        # 设置对话框样式
-        self.setStyleSheet("background-color: white; color: black;")
-        self.setStandardButtons(QMessageBox.Close)
-        # 自定义关闭按钮文本和样式
-        self.button(QMessageBox.Close).setText("好的")
-        self.button(QMessageBox.Close).setStyleSheet(
-            "min-width: 60px; border: 1px solid gray; border-radius: 1px;"
-        )
-
-        # 在初始化时设置位置
-        self.adjustSize()  # 确保窗口大小正确
-        self._center_window()
-
-    def _center_window(self):
-        """将窗口居中显示"""
-        if self.parent():
-            # 相对于父窗口居中
-            parent_geometry = self.parent().frameGeometry()
-            new_x = parent_geometry.center().x() - self.width() // 2
-            new_y = parent_geometry.center().y() - self.height() // 2
-        else:
-            # 相对于屏幕居中
-            screen_geometry = QDesktopWidget().availableGeometry()
-            new_x = screen_geometry.center().x() - self.width() // 2
-            new_y = screen_geometry.center().y() - self.height() // 2
-        self.move(new_x, new_y)
-
-    def showEvent(self, event):
-        """确保窗口显示时保持居中"""
-        super().showEvent(event)
-        self._center_window()
-
-
 # 欢迎界面
 class WelcomeUI(MouseEvents, QWidget):
     """
     欢迎界面，包含API KEY输入和验证逻辑
     """
-
     def __init__(self, center_point=None):
         super().__init__()
         # 设置窗口图标
@@ -286,13 +88,13 @@ class WelcomeUI(MouseEvents, QWidget):
         )
         self.exit_button.clicked.connect(self.close_window)
 
-        # API KEY输入框
+        # API KEY输入框（使用 EntryBox 预制类）
         self.api_entry = EntryBox("请输入DeepSeek的API KEY", self)
         self.api_entry.setGeometry(50, 100, 200, 30)
         api_key = os.getenv("DEEPSEEK_API_KEY", "")
         self.api_entry.setText(api_key)
 
-        # 验证按钮（使用BlueButton预制类）
+        # 验证按钮（使用 BlueButton 预制类）
         self.verify_button = BlueButton("验证", self)
         self.verify_button.setGeometry(270, 100, 80, 30)
         self.verify_button.clicked.connect(self.show_verifing)
@@ -301,9 +103,7 @@ class WelcomeUI(MouseEvents, QWidget):
         FadeAnimations.fade_in(self)
 
     def center(self):
-        """
-        将窗口居中显示
-        """
+        """将窗口居中显示"""
         qr = self.frameGeometry()
         cp = QDesktopWidget().availableGeometry().center()
         qr.moveCenter(cp)
@@ -347,7 +147,8 @@ class WelcomeUI(MouseEvents, QWidget):
         点击退出按钮时，通过淡出动画退出应用
         """
         FadeAnimations.fade_and_close(
-            self, callback=lambda: QApplication.instance().quit())
+            self, callback=lambda: QApplication.instance().quit()
+        )
 
 
 # 验证进度条界面
@@ -356,7 +157,6 @@ class VerifyProgessBar(MouseEvents, QWidget):
     验证进度条界面：
     显示连接至服务器的状态，并执行验证逻辑
     """
-
     def __init__(self, welcome_ui):
         super().__init__(None)
         self.welcome_ui = welcome_ui
@@ -385,15 +185,13 @@ class VerifyProgessBar(MouseEvents, QWidget):
         # 进度条填充部分
         self.progress_fill = QWidget(self.progress_container)
         self.progress_fill.setStyleSheet(
-            "background-color: #0077ED; border: none; border-radius: none;"
+            "background-color: #0077ED; border: none;"
         )
         self.progress_fill.setGeometry(2, 2, 0, 16)
         self.first_target_width = int(296 * 0.4)
 
     def center(self):
-        """
-        将窗口居中显示
-        """
+        """将窗口居中显示"""
         qr = self.frameGeometry()
         cp = QDesktopWidget().availableGeometry().center()
         qr.moveCenter(cp)
@@ -478,7 +276,6 @@ class MainUI(MouseEvents, QWidget):
     """
     主界面，包含配置、帮助、退出等按钮，以及报告生成的入口
     """
-
     def __init__(self):
         super().__init__()
         # 设置窗口图标
@@ -501,17 +298,17 @@ class MainUI(MouseEvents, QWidget):
         """
         初始化主界面的所有控件
         """
-        # 配置按钮（使用LiteButton预制类）
+        # 配置按钮（使用 LiteButton 预制类）
         self.setting_button = LiteButton("配置", self)
         self.setting_button.setGeometry(160, 10, 75, 30)
         self.setting_button.clicked.connect(self.on_setting)
 
-        # 帮助按钮（使用LiteButton预制类）
+        # 帮助按钮（使用 LiteButton 预制类）
         self.help_button = LiteButton("帮助", self)
         self.help_button.setGeometry(240, 10, 75, 30)
         self.help_button.clicked.connect(self.on_help)
 
-        # 退出按钮（使用LiteButton预制类），点击时通过fade_and_close退出应用
+        # 退出按钮（使用 LiteButton 预制类），点击时通过fade_and_close退出应用
         self.exit_button = LiteButton("退出", self)
         self.exit_button.setGeometry(320, 10, 75, 30)
         self.exit_button.clicked.connect(self.close_window)
@@ -520,7 +317,8 @@ class MainUI(MouseEvents, QWidget):
         self.graphicsView = QGraphicsView(self)
         self.graphicsView.setGeometry(140, 100, 128, 128)
         self.graphicsView.setStyleSheet(
-            "background-color: transparent; border: none;")
+            "background-color: transparent; border: none;"
+        )
         scene = QGraphicsScene(self)
         pixmap = QPixmap("img/icon.png")
         if not pixmap.isNull():
@@ -542,11 +340,11 @@ class MainUI(MouseEvents, QWidget):
             (self.width() - self.title_label.width()) // 2, 250
         )
 
-        # 企业关键词输入框
+        # 企业关键词输入框（使用 EntryBox 预制类）
         self.keyword_entry = EntryBox("请输入企业关键词...", self)
         self.keyword_entry.setGeometry(50, 320, 200, 30)
 
-        # 生成报告按钮（使用BlueButton预制类）
+        # 生成报告按钮（使用 BlueButton 预制类）
         self.go_button = BlueButton("生成报告", self)
         self.go_button.setGeometry(270, 320, 80, 30)
         self.go_button.clicked.connect(self.generate_report)
@@ -613,7 +411,8 @@ class MainUI(MouseEvents, QWidget):
 
     def close_window(self):
         FadeAnimations.fade_and_close(
-            self, callback=lambda: QApplication.instance().quit())
+            self, callback=lambda: QApplication.instance().quit()
+        )
 
 
 # 直接运行的底层逻辑
