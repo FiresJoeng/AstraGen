@@ -1,22 +1,66 @@
 {
   "company_name": "企业名称",
-  "registration_status": "登记状态",
-  "qichafen": "企查分",
-  "kechuangfen": "科创分",
-  "listing": "上市信息",
-  "high_tech_enterprise": "高新技术企业",
-  "unified_social_credit_code": "统一社会信用代码",
   "legal_representative": {
     "name": "法定代表人",
     "associated_companies": "关联企业数量"
   },
-  "registered_capital": "注册资本",
+  "registered_address": "注册地址",
+  "company_address": "经营地址",
   "establishment_date": "成立日期",
+  "registered_capital": "注册资本",
+  "paid_in_capital": "实缴资本",
+  "primary_account_bank": "基本户开户行",
+  "company_type": "企业类型",
+  "industry": "国标行业",
+  "current_year_credit_policy_guidance_enterprise_types": "我行当年授信政策指引企业类型",
+  "business_scope": "经营范围",
+  "shareholders": [
+    {
+      "name": "股东名称",
+      "subscribed_capital": "认缴资本",
+      "paid_in_capital": "实缴资本",
+      "shareholding_ratio": "持股比例",
+      "subscription_date": "认缴日期",
+      "type": "股东类型",
+      "paid_in_date": "实缴日期",
+      "indirect_shareholding_ratio": "间接持股比例",
+      "first_shareholding_date": "首次持股日期"
+    }
+  ],
+  "actual_controller": [
+    {
+      "name": "实际控制人名称",
+      "id": "身份证号码",
+      "main_experience": [
+        {
+          "time": "时间",
+          "公司": "公司",
+          "position": "职务"
+        }
+      ]
+    }
+  ],
+  "fund_stats": "资本金到位情况",
+  "shareholders_info": "股东情况介绍",
+  "equity_structure": "股权结构图",
+  "key_personnel": [
+    {
+      "name": "姓名",
+      "position": "职务",
+      "shareholding_ratio": "持股比例"
+    }
+  ],
+  "personal_credit": "个人品行及资信记录",
+  "corporate_governance": "公司治理",
+  "historical_evolution": "历史沿革",
+  "development_certification": "开发资质",
+  "registration_status": "登记状态",
+  "listing": "上市信息",
+  "high_tech_enterprise": "高新技术企业",
+  "unified_social_credit_code": "统一社会信用代码",
   "phone": "联系电话",
   "email": "邮箱",
   "website": "官网",
-  "company_address": "经营地址",
-  "industry": "所属行业",
   "company_size": "企业规模",
   "employee_count": "员工人数",
   "revenue": "营业收入",
@@ -94,26 +138,6 @@
       "2020": "现金流(2020)"
     }
   },
-  "shareholders": [
-    {
-      "name": "股东名称",
-      "type": "股东类型",
-      "shareholding_ratio": "持股比例",
-      "subscribed_capital": "认缴资本",
-      "subscription_date": "认缴日期",
-      "paid_in_capital": "实缴资本",
-      "paid_in_date": "实缴日期",
-      "indirect_shareholding_ratio": "间接持股比例",
-      "first_shareholding_date": "首次持股日期"
-    }
-  ],
-  "key_personnel": [
-    {
-      "name": "姓名",
-      "position": "职务",
-      "shareholding_ratio": "持股比例"
-    }
-  ],
   "external_investments": [
     {
       "company_name": "对外投资企业名称",
