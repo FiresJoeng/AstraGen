@@ -1,0 +1,48 @@
+{
+  "company_name": "张三有限公司",
+  "legal_representative": "李四",
+  "registered_address": "甲地",
+  "company_address": "乙地",
+  "establishment_date": "2000年1月1日",
+  "registered_capital": "100万",
+  "paid_in_capital": "150万",
+  "primary_account_bank": "资本银行",
+  "company_type": "存续",
+  "industry": "服务业",
+  "current_year_credit_policy_guidance_enterprise_types": "某某型",
+  "business_scope": "某服务业范围",
+  "shareholders": [
+    {
+      "name": "王五",
+      "subscribed_capital": "50万",
+      "paid_in_capital": "100万",
+      "shareholding_ratio": "50%",
+      "subscription_date": "2001年1月1日"
+    }
+  ],
+  "actual_controller": [
+    {
+      "name": "赵六",
+      "id": "11011019600606XXXX",
+      "main_experience": [
+        {
+          "time": "时间",
+          "company": "公司",
+          "position": "职务"
+        }
+      ]
+    }
+  ],
+  "fund_stats": "资本金到位",
+  "shareholders_info": "大股东",
+  "equity_structure": "股权结构图",
+  "key_personnel": [
+    {
+      "name": "孙七"
+    }
+  ],
+  "personal_credit": "无不良记录",
+  "corporate_governance": "公司治理事项",
+  "historical_evolution": "历史沿革事项",
+  "development_certification": "良好"
+}
