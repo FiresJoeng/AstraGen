@@ -17,6 +17,28 @@ def load_json(json_path):
     return data
 
 
+def flatten_fill_data(data, parent_key=""):
+    """
+    将嵌套字典和数组扁平化，将键合并为类似 key[sub_key] 的格式，
+    """
+    items = {}
+    if isinstance(data, dict):
+        for k, v in data.items():
+            new_key = f"{parent_key}[{k}]" if parent_key else k
+            if isinstance(v, dict):
+                items.update(flatten_fill_data(v, parent_key=new_key))
+            elif isinstance(v, list):
+                # 如果是字典数组，则取第一个字典扁平化
+                if len(v) > 0 and isinstance(v[0], dict):
+                    items.update(flatten_fill_data(v[0], parent_key=new_key))
+                else:
+                    # 否则将列表的值以逗号分隔成字符串
+                    items[new_key] = ', '.join(map(str, v))
+            else:
+                items[new_key] = v
+    return items
+
+
 def fill_docx(template_path, fill_data, output_path):
     if not os.path.exists(template_path):
         raise FileNotFoundError(f"[Error] 模板文件不存在: {template_path}!")
@@ -28,25 +50,28 @@ def fill_docx(template_path, fill_data, output_path):
     if not isinstance(fill_data, dict):
         raise TypeError("[Error] fill_data 必须为字典类型.")
 
+    # 扁平化 fill_data，处理嵌套字典和数组
+    flat_data = flatten_fill_data(fill_data)
+
     # 文本段落处理
     for para in doc.paragraphs:
-        for key, value in fill_data.items():
-            if key in para.text:
+        for placeholder, value in flat_data.items():
+            if placeholder in para.text:
                 for run in para.runs:
-                    if key in run.text:
-                        run.text = run.text.replace(key, str(value))
+                    if placeholder in run.text:
+                        run.text = run.text.replace(placeholder, str(value))
 
     # 表格处理
     for table in doc.tables:
         for row in table.rows:
             for cell in row.cells:
                 for para in cell.paragraphs:
-                    for key, value in fill_data.items():
-                        if key in para.text:
+                    for placeholder, value in flat_data.items():
+                        if placeholder in para.text:
                             for run in para.runs:
-                                if key in run.text:
+                                if placeholder in run.text:
                                     run.text = run.text.replace(
-                                        key, str(value))
+                                        placeholder, str(value))
     try:
         doc.save(output_path)
     except Exception as e:
