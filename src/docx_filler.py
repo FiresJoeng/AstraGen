@@ -78,7 +78,7 @@ def generate_report(file_name):
 
     # 处理 docx 文件
     process_docx(docx_path, json_data, output_path)
-    print("替换完成，输出文件保存至：", output_path)
+    print("[Output] 替换完成，输出文件保存至：", output_path)
 
 
 # 底层运行逻辑，测试用
