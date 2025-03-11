@@ -1,8 +1,6 @@
 {
   "company_name": "企业名称",
-  "legal_representative": {
-    "name": "法定代表人"
-  },
+  "legal_representative": "法定代表人",
   "registered_address": "注册地址",
   "company_address": "经营地址",
   "establishment_date": "成立日期",
