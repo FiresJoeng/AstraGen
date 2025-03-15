@@ -34,7 +34,7 @@ context_config = BrowserContextConfig(
 
 # 定义浏览器配置（无头模式）
 browser_config = BrowserConfig(
-    headless=True,
+    headless=False,
     new_context_config=context_config
 )
 
@@ -78,7 +78,7 @@ def create_qcc_agent(keyword: str) -> Agent:
     # 获取最新的 DeepSeek API 客户端
     DeepSeek_V3, _ = get_deepseek_api_clients()
 
-    qcc_agent_prompt = f'''
+    qcc_agent_prompt = '''
 1. 如需登录，请等待30秒，直到用户完成登录并且网页跳转。否则，请忽略此步骤。
 
 2. 请点击第一条搜索结果。
@@ -127,7 +127,7 @@ def create_json_agent(keyword: str) -> Agent:
     # 获取最新的 DeepSeek API 客户端
     DeepSeek_V3, _ = get_deepseek_api_clients()
 
-    json_agent_prompt = f'''
+    json_agent_prompt = '''
 1. 请总结页面中该企业的所有信息，整理归纳为以下JSON形式输出。
     ```
     {
