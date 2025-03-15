@@ -48,6 +48,22 @@ def create_qcc_agent(keyword: str) -> Agent:
     # 创建 Controller，并利用闭包捕获 keyword
     qcc_controller = Controller()
 
+    @qcc_controller.action("保存企业信息")
+    async def 保存企业信息(browser: Browser, content: str):
+        try:
+            output_dir = "output"
+            os.makedirs(output_dir, exist_ok=True)
+            extract_path = os.path.join(output_dir, f"{keyword}.json")
+            with open(extract_path, "w", encoding="utf-8") as f:
+                f.write(content)
+            feedback_msg = f"[Function] 成功保存企业信息至 {extract_path}"
+            print(feedback_msg)
+            return feedback_msg
+        except Exception as e:
+            error_msg = f"[Error] 保存企业信息失败: {str(e)}"
+            print(error_msg)
+            raise
+
     @qcc_controller.action("screenshot")
     async def screenshot(browser: Browser):
         try:
@@ -80,8 +96,10 @@ def create_qcc_agent(keyword: str) -> Agent:
 
     qcc_agent_prompt = f'''
 1. 如需登录，请等待30秒，直到用户完成登录并且网页跳转。否则，请忽略此步骤。
-
 2. 请点击第一条搜索结果。
+3. 请总结页面中该企业的所有信息，整理归纳为JSON形式输出。
+4. 调用"保存企业信息"（保存企业信息）函数。注意：只调用一次，然后立即继续下一步！
+5. 关闭浏览器。
 '''
 
     # 创建 Agent 实例
@@ -96,125 +114,10 @@ def create_qcc_agent(keyword: str) -> Agent:
     return qcc_agent
 
 
-def create_json_agent(keyword: str) -> Agent:
-    keyword = keyword.strip()
-    if not keyword:
-        raise ValueError("[Error] 搜索关键词不能为空！")
-
-    # 创建 Controller，并利用闭包捕获 keyword
-    json_controller = Controller()
-
-    @json_controller.action("保存企业信息")
-    async def 保存企业信息(browser: Browser, content: str):
-        try:
-            output_dir = "output"
-            os.makedirs(output_dir, exist_ok=True)
-            extract_path = os.path.join(output_dir, f"{keyword}.json")
-            with open(extract_path, "w", encoding="utf-8") as f:
-                f.write(content)
-            feedback_msg = f"[Function] 成功保存企业信息至 {extract_path}"
-            print(feedback_msg)
-            return feedback_msg
-        except Exception as e:
-            error_msg = f"[Error] 保存企业信息失败: {str(e)}"
-            print(error_msg)
-            raise
-
-    # 创建浏览器实例与上下文
-    browser = Browser(config=browser_config)
-    context = BrowserContext(browser=browser, config=context_config)
-
-    # 获取最新的 DeepSeek API 客户端
-    DeepSeek_V3, _ = get_deepseek_api_clients()
-
-    json_agent_prompt = f'''
-1. 请总结页面中该企业的所有信息，整理归纳为以下JSON形式输出。
-    ```
-    {
-    "company_name": "企业名称",
-    "legal_representative": "法定代表人",
-    "registered_address": "注册地址",
-    "company_address": "经营地址",
-    "establishment_date": "成立日期",
-    "registered_capital": "注册资本",
-    "paid_in_capital": "实缴资本",
-    "primary_account_bank": "基本户开户行",
-    "company_type": "企业类型",
-    "industry": "国标行业",
-    "current_year_credit_policy_guidance_enterprise_types": "我行当年授信政策指引企业类型",
-    "business_scope": "经营范围",
-    "shareholders": [
-        {
-        "name": "股东名称",
-        "subscribed_capital": "认缴资本",
-        "paid_in_capital": "实缴资本",
-        "shareholding_ratio": "持股比例",
-        "subscription_date": "认缴日期"
-        }
-    ],
-    "actual_controller": [
-        {
-        "name": "实际控制人名称",
-        "id": "身份证号码",
-        "main_experience": [
-            {
-            "time": "时间",
-            "company": "公司",
-            "position": "职务"
-            }
-        ]
-        }
-    ],
-    "fund_stats": "资本金到位情况",
-    "shareholders_info": "股东情况介绍",
-    "equity_structure": "股权结构图",
-    "key_personnel": [
-        {
-        "name": "姓名"
-        }
-    ],
-    "personal_credit": "个人品行及资信记录",
-    "corporate_governance": "公司治理",
-    "historical_evolution": "历史沿革",
-    "development_certification": "开发资质"
-    }
-    ```
-    详细要求：
-        (1) 参考模板中的所有键值对是你要在网页中获取的信息；
-        (2) 模板中的所有键名及顺序必须严格一致，不能有任何变动；
-        (3) 如果未能抓取到某个键对应的信息，请将该键的值填为 "未知"；
-        (4) 对于类似下面这种数组形式的值，可根据实际企业信息添加多个对象，具体视网页提供信息的数量而定：
-            ```
-            "key": [
-                {
-                "key": "value"
-                }
-            ]
-            ```
-        (5) 请确保最终生成的 JSON 完全符合参考模板的结构和格式。
-
-2. 调用"保存企业信息"（保存企业信息）函数。
-
-3. 关闭浏览器。
-'''
-
-    # 创建 Agent 实例
-    json_agent = Agent(
-        browser_context=context,
-        controller=json_controller,
-        task=json_agent_prompt,
-        llm=DeepSeek_V3,
-        use_vision=False
-    )
-    return json_agent
-
-
 async def run_agents(keyword: str):
     qcc_agent = create_qcc_agent(keyword)
-    json_agent = create_json_agent(keyword)
     try:
         await qcc_agent.run()
-        await json_agent.run()
     except Exception as e:
         print("[Error] 运行出现异常:", str(e))
         raise
