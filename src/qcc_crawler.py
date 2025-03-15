@@ -39,7 +39,7 @@ browser_config = BrowserConfig(
 )
 
 
-def create_shared_browser_context():
+def create_agents_context():
     # 创建一个共享的 Browser 实例
     browser = Browser(config=browser_config)
     # 基于这个浏览器实例创建一个共享的 BrowserContext
@@ -47,7 +47,7 @@ def create_shared_browser_context():
     return context
 
 
-def create_qcc_agent(keyword: str, shared_context: BrowserContext) -> Agent:
+def create_qcc_agent(keyword: str, agents_context: BrowserContext) -> Agent:
     keyword = keyword.strip()
     if not keyword:
         raise ValueError("[Error] 搜索关键词不能为空！")
@@ -74,8 +74,9 @@ def create_qcc_agent(keyword: str, shared_context: BrowserContext) -> Agent:
             print(error_msg)
             raise
 
-    default_actions = [
+    qcc_actions = [
         {"go_to_url": {"url": qcc_url}},
+        {"wait": {"seconds": 1}},
         {"screenshot": {}},
     ]
 
@@ -84,14 +85,13 @@ def create_qcc_agent(keyword: str, shared_context: BrowserContext) -> Agent:
 
     qcc_agent_prompt = '''
 1. 如需登录，请等待30秒，直到用户完成登录并且网页跳转。否则，请忽略此步骤。
-
 2. 请点击第一条搜索结果。
 '''
 
     # 创建 Agent 实例，使用共享的 BrowserContext
     qcc_agent = Agent(
-        browser_context=shared_context,
-        initial_actions=default_actions,
+        browser_context=agents_context,
+        initial_actions=qcc_actions,
         controller=qcc_controller,
         task=qcc_agent_prompt,
         llm=DeepSeek_V3,
@@ -100,7 +100,7 @@ def create_qcc_agent(keyword: str, shared_context: BrowserContext) -> Agent:
     return qcc_agent
 
 
-def create_json_agent(keyword: str, shared_context: BrowserContext) -> Agent:
+def create_json_agent(keyword: str, agents_context: BrowserContext) -> Agent:
     keyword = keyword.strip()
     if not keyword:
         raise ValueError("[Error] 搜索关键词不能为空！")
@@ -124,20 +124,83 @@ def create_json_agent(keyword: str, shared_context: BrowserContext) -> Agent:
             print(error_msg)
             raise
 
+    json_actions = [
+        {"extract_content": {
+            "goal":
+            '''
+请总结页面中该企业的所有信息，整理归纳为以下JSON形式输出。
+    ```
+    {
+      "company_name": "企业名称",
+      "legal_representative": "法定代表人",
+      "registered_address": "注册地址",
+      "company_address": "经营地址",
+      "establishment_date": "成立日期",
+      "registered_capital": "注册资本",
+      "paid_in_capital": "实缴资本",
+      "primary_account_bank": "基本户开户行",
+      "company_type": "企业类型",
+      "industry": "国标行业",
+      "current_year_credit_policy_guidance_enterprise_types": "我行当年授信政策指引企业类型",
+      "business_scope": "经营范围",
+      "shareholders": [
+        {
+          "name": "股东名称",
+          "subscribed_capital": "认缴资本",
+          "paid_in_capital": "实缴资本",
+          "shareholding_ratio": "持股比例",
+          "subscription_date": "认缴日期"
+        }
+      ],
+      "actual_controller": [
+        {
+          "name": "实际控制人名称",
+          "id": "身份证号码",
+          "main_experience": [
+            {
+              "time": "时间",
+              "company": "公司",
+              "position": "职务"
+            }
+          ]
+        }
+      ],
+      "fund_stats": "资本金到位情况",
+      "shareholders_info": "股东情况介绍",
+      "equity_structure": "股权结构图",
+      "key_personnel": [
+        {
+          "name": "姓名"
+        }
+      ],
+      "personal_credit": "个人品行及资信记录",
+      "corporate_governance": "公司治理",
+      "historical_evolution": "历史沿革",
+      "development_certification": "开发资质"
+    }
+    ```
+详细要求：
+    (1) 参考模板中的所有键值对是你要在网页中获取的信息；
+    (2) 模板中的所有键名及顺序必须严格一致，不能有任何变动；
+    (3) 如果未能抓取到某个键对应的信息，请将该键的值填为 "未知"；
+    (4) 对于类似下面这种数组形式的值，可根据实际企业信息添加多个对象，具体视网页提供信息的数量而定；
+    (5) 请确保最终生成的 JSON 完全符合参考模板的结构和格式。
+'''
+        }}
+    ]
+
     # 获取最新的 DeepSeek API 客户端
     DeepSeek_V3, _ = get_deepseek_api_clients()
 
     json_agent_prompt = '''
-1. 请总结页面中该企业的所有信息，整理归纳为JSON形式输出。
-
-2. 调用"保存企业信息"函数。
-
-3. 关闭浏览器。
+1. 调用"保存企业信息"函数。
+2. 关闭浏览器。
 '''
 
     # 创建 Agent 实例，使用共享的 BrowserContext
     json_agent = Agent(
-        browser_context=shared_context,
+        browser_context=agents_context,
+        initial_actions=json_actions,
         controller=json_controller,
         task=json_agent_prompt,
         llm=DeepSeek_V3,
@@ -148,9 +211,9 @@ def create_json_agent(keyword: str, shared_context: BrowserContext) -> Agent:
 
 async def run_agents(keyword: str):
     # 创建共享的 BrowserContext
-    shared_context = create_shared_browser_context()
-    qcc_agent = create_qcc_agent(keyword, shared_context)
-    json_agent = create_json_agent(keyword, shared_context)
+    agents_context = create_agents_context()
+    qcc_agent = create_qcc_agent(keyword, agents_context)
+    json_agent = create_json_agent(keyword, agents_context)
     try:
         await qcc_agent.run()
         await json_agent.run()
@@ -159,11 +222,13 @@ async def run_agents(keyword: str):
         raise
     finally:
         try:
-            await shared_context.close()
-            await shared_context.browser.close()
+            await agents_context.close()
+            await agents_context.browser.close()
         except Exception as e:
             print("[Error] 关闭浏览器时发生错误:", str(e))
 
+
+# 底层运行逻辑，测试用
 if __name__ == "__main__":
     try:
         input_keyword = input("请输入搜索关键词 > ").strip()
