@@ -268,6 +268,15 @@ class WelcomeUI(MouseEvents, QWidget):
 
         self.exit_button = LiteButton("×", self)
         self.exit_button.setGeometry(350, 10, 30, 25)
+        self.exit_button.setStyleSheet("""
+            QPushButton {
+                color: white;
+                font-size: 20px;
+            }
+            QPushButton:hover {
+                color: gray;
+            }
+        """)
         self.exit_button.clicked.connect(self.close_window)
 
         self.api_entry = EntryBox("请输入DeepSeek的API KEY", self)
