@@ -18,7 +18,7 @@
 | 经营范围                                     | business_scope                  | 字符串   | 免费公开信息 |
 | 资本金到位情况                               | fund_stats                      | 字符串   | 银行 |
 | 股东情况介绍                                 | shareholders_info               | 字符串   | 付费查询信息 |
-| 股权结构图                                   | equity_structure                | 图片/文件 | 付费查询信息 |
+| 股权结构图                                   | equity_structure                | 图片文件 | 付费查询信息 |
 | 个人品行及资信记录                           | personal_credit                 | 字符串   | 银行 |
 | 公司治理                                     | corporate_governance            | 字符串   | 企业 |
 | 历史沿革                                     | historical_evolution            | 字符串   | 企业 |
