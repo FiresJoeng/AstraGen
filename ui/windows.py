@@ -115,12 +115,19 @@ class MainUI(MouseEvents, QWidget):
         else:
             try:
                 asyncio.run(qcc_crawler.run_agents(keyword))
-                docx_filler.generate_report(keyword)
-            except Exception as e:
+            except Exception as agents_error:
                 msg = MsgBox(self)
                 msg.setIcon(QMessageBox.Critical)
                 msg.setWindowTitle("Error!")
-                msg.setText("发生了一个致命错误: " + str(e))
+                msg.setText("主机尝试与DeepSeek服务器连接时, 发生了一个网络错误: " + str(agents_error))
+                msg.show()
+            try:
+                docx_filler.generate_report(keyword)
+            except Exception as filler_error:
+                msg = MsgBox(self)
+                msg.setIcon(QMessageBox.Critical)
+                msg.setWindowTitle("Error!")
+                msg.setText("由于DeepSeek服务器拥挤, 未能如期获取企业信息: " + str(filler_error))
                 msg.show()
 
     def on_help(self):
