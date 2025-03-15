@@ -1,16 +1,59 @@
 # JSON Agent Prompt
 
-##### 请根据参考模板抓取到的企业信息整理成JSON，要求如下：
-
-1. 参考模板中的所有键值对是你要在网页中获取的信息；
-2. 模板中的所有键名及顺序必须严格一致，不能有任何变动；
-3. 如果未能抓取到某个键对应的信息，请将该键的值填为 "未知"；
-4. 对于类似下面这种数组形式的值，可根据实际企业信息添加多个对象，具体视网页提供信息的数量而定：
-  ```
-  "key": [
+##### 请总结页面中该企业的所有信息，整理归纳为以下JSON形式输出。
+    ```
     {
-      "key": "value"
+      "company_name": "企业名称",
+      "legal_representative": "法定代表人",
+      "registered_address": "注册地址",
+      "company_address": "经营地址",
+      "establishment_date": "成立日期",
+      "registered_capital": "注册资本",
+      "paid_in_capital": "实缴资本",
+      "primary_account_bank": "基本户开户行",
+      "company_type": "企业类型",
+      "industry": "国标行业",
+      "current_year_credit_policy_guidance_enterprise_types": "我行当年授信政策指引企业类型",
+      "business_scope": "经营范围",
+      "shareholders": [
+        {
+          "name": "股东名称",
+          "subscribed_capital": "认缴资本",
+          "paid_in_capital": "实缴资本",
+          "shareholding_ratio": "持股比例",
+          "subscription_date": "认缴日期"
+        }
+      ],
+      "actual_controller": [
+        {
+          "name": "实际控制人名称",
+          "id": "身份证号码",
+          "main_experience": [
+            {
+              "time": "时间",
+              "company": "公司",
+              "position": "职务"
+            }
+          ]
+        }
+      ],
+      "fund_stats": "资本金到位情况",
+      "shareholders_info": "股东情况介绍",
+      "equity_structure": "股权结构图",
+      "key_personnel": [
+        {
+          "name": "姓名"
+        }
+      ],
+      "personal_credit": "个人品行及资信记录",
+      "corporate_governance": "公司治理",
+      "historical_evolution": "历史沿革",
+      "development_certification": "开发资质"
     }
-  ]
-  ```
-5. 请确保最终生成的 JSON 完全符合参考模板的结构和格式。
+    ```
+    详细要求：
+        (1) 参考模板中的所有键值对是你要在网页中获取的信息；
+        (2) 模板中的所有键名及顺序必须严格一致，不能有任何变动；
+        (3) 如果未能抓取到某个键对应的信息，请将该键的值填为 "未知"；
+        (4) 对于类似下面这种数组形式的值，可根据实际企业信息添加多个对象，具体视网页提供信息的数量而定；
+        (5) 请确保最终生成的 JSON 完全符合参考模板的结构和格式。
