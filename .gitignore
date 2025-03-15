@@ -1,1 +1,4 @@
 *.pyc
+cookies.json
+.env
+login_page.png

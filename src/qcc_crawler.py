@@ -26,6 +26,8 @@ def get_deepseek_api_clients():
 
 
 # 定义浏览器上下文配置
+data_dir = "data"
+os.makedirs(data_dir, exist_ok=True)
 context_config = BrowserContextConfig(
     cookies_file="data/cookies.json",
     viewport_expansion=-1,
