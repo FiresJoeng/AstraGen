@@ -114,7 +114,7 @@ class MainUI(MouseEvents, QWidget):
             msg.show()
         else:
             try:
-                asyncio.run(qcc_crawler.run_agent(keyword))
+                asyncio.run(qcc_crawler.run_agents(keyword))
                 docx_filler.generate_report(keyword)
             except Exception as e:
                 msg = MsgBox(self)
