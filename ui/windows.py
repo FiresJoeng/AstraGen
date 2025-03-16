@@ -98,7 +98,7 @@ class MainUI(MouseEvents, QWidget):
         self.repo_button.move(
             (self.width() - self.repo_button.width()) // 2, 580)
         self.repo_button.clicked.connect(self.go_to_repo)
-    
+
     def go_to_repo(self):
         import webbrowser
         webbrowser.open("https://github.com/FiresJoeng/AstraGen")
@@ -118,7 +118,8 @@ class MainUI(MouseEvents, QWidget):
                 msg = MsgBox(self)
                 msg.setIcon(QMessageBox.Critical)
                 msg.setWindowTitle("Error!")
-                msg.setText("主机尝试与DeepSeek服务器连接时, 发生了一个网络错误: " + str(agents_error))
+                msg.setText("主机尝试与DeepSeek服务器连接时, 发生了一个网络错误: " +
+                            str(agents_error))
                 msg.show()
             try:
                 docx_filler.generate_report(keyword)
@@ -126,7 +127,8 @@ class MainUI(MouseEvents, QWidget):
                 msg = MsgBox(self)
                 msg.setIcon(QMessageBox.Critical)
                 msg.setWindowTitle("Error!")
-                msg.setText("由于DeepSeek服务器拥挤, 未能如期获取企业信息: " + str(filler_error))
+                msg.setText("由于DeepSeek服务器拥挤, 未能如期获取企业信息: " +
+                            str(filler_error))
                 msg.show()
 
     def on_help(self):
