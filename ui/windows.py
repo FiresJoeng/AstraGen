@@ -302,11 +302,6 @@ class WelcomeUI(MouseEvents, QWidget):
         qr.moveCenter(cp)
         self.move(qr.topLeft())
 
-    def showEvent(self, event):
-        super().showEvent(event)
-        self.raise_()
-        self.activateWindow()
-
     def show_verifing(self):
         api_key = self.api_entry.text().strip()
         if not api_key:
