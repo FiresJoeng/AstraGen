@@ -124,7 +124,7 @@ class MainUI(MouseEvents, QWidget):
             try:
                 docx_filler.generate_report(keyword)
                 msg = MsgBox(self)
-                msg.setIcon(QMessageBox.Critical)
+                msg.setIcon(QMessageBox.Information)
                 msg.setWindowTitle("Succeeded!")
                 msg.setText(f'关于"{keyword}"的信贷报告已经填充完毕!')
                 msg.show()
@@ -132,7 +132,7 @@ class MainUI(MouseEvents, QWidget):
                 msg = MsgBox(self)
                 msg.setIcon(QMessageBox.Critical)
                 msg.setWindowTitle("Error!")
-                msg.setText("由于DeepSeek服务器拥挤, 未能如期获取企业信息: " +
+                msg.setText("由于DeepSeek服务器解析问题，未能如期提取企业信息: " +
                             str(filler_error))
                 msg.show()
 

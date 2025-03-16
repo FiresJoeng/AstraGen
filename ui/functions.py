@@ -22,7 +22,7 @@ class ReportGenerator(QThread):
             # 生成报告任务（假设 docx_filler.generate_report 为耗时操作）
             docx_filler.generate_report(self.keyword)
         except Exception as e:
-            self.error_occurred.emit("由于DeepSeek服务器拥挤，未能如期获取企业信息: " + str(e))
+            self.error_occurred.emit("由于DeepSeek服务器解析问题，未能如期提取企业信息: " + str(e))
             return
         # 如果所有任务执行成功，则发送完成信号
         self.finished.emit()

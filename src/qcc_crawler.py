@@ -152,7 +152,7 @@ def create_json_agent(keyword: str, agents_context: BrowserContext) -> Agent:
     DeepSeek_V3, _ = get_deepseek_api_clients()
 
     json_agent_prompt = '''
-1. 请调用“保存企业信息”函数，以将之前整理好的 JSON 数据保存为文件。
+1. 将整理好的 JSON 数据作为content，通过调用“保存企业信息”函数保存为文件。
 2. 关闭浏览器。
 '''
 
