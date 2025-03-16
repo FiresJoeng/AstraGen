@@ -92,17 +92,16 @@ class MainUI(MouseEvents, QWidget):
         self.ver_label.move((self.width() - self.ver_label.width()) // 2, 560)
 
         # 项目仓库链接标签
-        self.repo_label = QLabel(
+        self.repo_button = LiteButton(
             "https://github.com/FiresJoeng/AstraGen", self)
-        self.repo_label.setStyleSheet("color: white;")
-        self.repo_label.adjustSize()
-        self.repo_label.move(
-            (self.width() - self.repo_label.width()) // 2, 580)
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        self.raise_()
-        self.activateWindow()
+        self.repo_button.adjustSize()
+        self.repo_button.move(
+            (self.width() - self.repo_button.width()) // 2, 580)
+        self.repo_button.clicked.connect(self.go_to_repo)
+    
+    def go_to_repo(self):
+        import webbrowser
+        webbrowser.open("https://github.com/FiresJoeng/AstraGen")
 
     def generate_report(self):
         keyword = self.keyword_entry.text().strip()
