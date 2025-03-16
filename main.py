@@ -28,7 +28,7 @@ controls.FontLoader.load_font(
     app, font_path="fonts/SarasaMonoSC-Light.ttf", fallback="Arial")
 
 
-# 底层运行逻辑
+# 底层入口
 if __name__ == "__main__":
     start_window = windows.WelcomeUI()
     controls.FadeAnimations.fade_and_show(start_window)

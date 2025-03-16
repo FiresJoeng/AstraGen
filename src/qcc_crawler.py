@@ -152,7 +152,7 @@ def create_json_agent(keyword: str, agents_context: BrowserContext) -> Agent:
     DeepSeek_V3, _ = get_deepseek_api_clients()
 
     json_agent_prompt = '''
-1. 调用"保存企业信息"函数。
+1. 请调用“保存企业信息”函数，以将之前整理好的 JSON 数据保存为文件。
 2. 关闭浏览器。
 '''
 
@@ -187,7 +187,7 @@ async def run_agents(keyword: str):
             print("[Error] 关闭浏览器时发生错误:", str(e))
 
 
-# 底层运行逻辑，测试用
+# 底层入口，Debug用
 if __name__ == "__main__":
     try:
         input_keyword = input("请输入搜索关键词 > ").strip()

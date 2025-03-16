@@ -123,6 +123,11 @@ class MainUI(MouseEvents, QWidget):
                 msg.show()
             try:
                 docx_filler.generate_report(keyword)
+                msg = MsgBox(self)
+                msg.setIcon(QMessageBox.Critical)
+                msg.setWindowTitle("Succeeded!")
+                msg.setText(f'关于"{keyword}"的信贷报告已经填充完毕!')
+                msg.show()
             except Exception as filler_error:
                 msg = MsgBox(self)
                 msg.setIcon(QMessageBox.Critical)

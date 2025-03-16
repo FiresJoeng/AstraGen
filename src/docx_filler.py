@@ -127,7 +127,7 @@ def generate_report(file_name):
     print("[Output] 填充完成，输出文件保存至：", output_path)
 
 
-# 底层运行逻辑，测试用
+# 底层入口，Debug用
 if __name__ == "__main__":
     try:
         keyword = input("文件名 (无后缀) > ").strip()

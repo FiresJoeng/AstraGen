@@ -24,5 +24,6 @@ def verify_deepseek_api():
         raise ValueError(f'[Error] API KEY验证失败: {str(e)}!')
 
 
+# 底层入口，Debug用
 if __name__ == "__main__":
     verify_deepseek_api()
