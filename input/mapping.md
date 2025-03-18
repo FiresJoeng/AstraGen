@@ -16,7 +16,7 @@
 | 基本户开户行                                 | primary_account_bank            | 字符串   | 免费公开信息 |
 | 企业类型                                     | company_type                    | 字符串   | 免费公开信息 |
 | 国标行业                                     | industry                        | 字符串   | 免费公开信息 |
-| 我行当年授信政策指引企业类型                 | current_year_credit_policy_guidance_enterprise_types | 字符串 | 未知 |
+| 我行当年授信政策指引企业类型                 | current_year_credit_policy_guidance_enterprise_types | 字符串 | 银行 |
 | 经营范围                                     | business_scope                  | 字符串   | 免费公开信息 |
 | 资本金到位情况                               | fund_stats                      | 字符串   | 银行 |
 | 股东情况介绍                                 | shareholders_info               | 字符串   | 付费查询信息 |
