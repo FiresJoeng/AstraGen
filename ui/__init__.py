@@ -12,11 +12,13 @@ __version__ = "1.0 Demo"
 
 __all__ = [
     'controls',
+    'functions',
     'widgets',
     'windows'
 ]
 
 # 显式导入核心模块
 from . import controls
+from . import functions
 from . import widgets
 from . import windows
