@@ -8,11 +8,10 @@ from PyQt5.QtGui import QIcon, QPixmap, QFont
 from PyQt5.QtCore import Qt, QPropertyAnimation, QEasingCurve, QSize, QTimer
 from dotenv import set_key, find_dotenv
 from src import *
-from ui.widgets import BlueButton, LiteButton, EntryBox, MsgBox
-from ui.controls import FadeAnimations, MouseEvents
+from ui import controls, widgets
 
 
-class MainUI(MouseEvents, QWidget):
+class MainUI(controls.MouseEvents, QWidget):
     """
     主界面，包含配置、帮助、退出等按钮，以及报告生成的入口
     """
@@ -27,7 +26,7 @@ class MainUI(MouseEvents, QWidget):
         self.setWindowOpacity(0)
         self.center()
         self.init_ui()
-        FadeAnimations.fade_in(self)
+        controls.FadeAnimations.fade_in(self)
 
     def center(self):
         qr = self.frameGeometry()
@@ -37,17 +36,17 @@ class MainUI(MouseEvents, QWidget):
 
     def init_ui(self):
         # 配置按钮
-        self.setting_button = LiteButton("配置", self)
+        self.setting_button = widgets.LiteButton("配置", self)
         self.setting_button.setGeometry(160, 10, 75, 30)
         self.setting_button.clicked.connect(self.on_setting)
 
         # 帮助按钮
-        self.help_button = LiteButton("帮助", self)
+        self.help_button = widgets.LiteButton("帮助", self)
         self.help_button.setGeometry(240, 10, 75, 30)
         self.help_button.clicked.connect(self.on_help)
 
         # 退出按钮
-        self.exit_button = LiteButton("退出", self)
+        self.exit_button = widgets.LiteButton("退出", self)
         self.exit_button.setGeometry(320, 10, 75, 30)
         self.exit_button.clicked.connect(self.close_window)
 
@@ -77,11 +76,11 @@ class MainUI(MouseEvents, QWidget):
             (self.width() - self.title_label.width()) // 2, 250)
 
         # 企业关键词输入框
-        self.keyword_entry = EntryBox("请输入企业关键词...", self)
+        self.keyword_entry = widgets.EntryBox("请输入企业关键词...", self)
         self.keyword_entry.setGeometry(50, 320, 200, 30)
 
         # 生成报告按钮
-        self.go_button = BlueButton("生成报告", self)
+        self.go_button = widgets.BlueButton("生成报告", self)
         self.go_button.setGeometry(270, 320, 80, 30)
         self.go_button.clicked.connect(self.generate_report)
 
@@ -92,7 +91,7 @@ class MainUI(MouseEvents, QWidget):
         self.ver_label.move((self.width() - self.ver_label.width()) // 2, 560)
 
         # 项目仓库链接标签
-        self.repo_button = LiteButton(
+        self.repo_button = widgets.LiteButton(
             "https://github.com/FiresJoeng/AstraGen", self)
         self.repo_button.adjustSize()
         self.repo_button.move(
@@ -106,7 +105,7 @@ class MainUI(MouseEvents, QWidget):
     def generate_report(self):
         keyword = self.keyword_entry.text().strip()
         if not keyword:
-            msg = MsgBox(self)
+            msg = widgets.MsgBox(self)
             msg.setIcon(QMessageBox.Critical)
             msg.setWindowTitle("Error!")
             msg.setText("请输入有效的企业关键词!")
@@ -115,7 +114,7 @@ class MainUI(MouseEvents, QWidget):
             try:
                 asyncio.run(qcc_crawler.run_agents(keyword))
             except Exception as agents_error:
-                msg = MsgBox(self)
+                msg = widgets.MsgBox(self)
                 msg.setIcon(QMessageBox.Critical)
                 msg.setWindowTitle("Error!")
                 msg.setText("主机尝试与DeepSeek服务器连接时, 发生了一个网络错误: " +
@@ -123,13 +122,13 @@ class MainUI(MouseEvents, QWidget):
                 msg.show()
             try:
                 docx_filler.generate_report(keyword)
-                msg = MsgBox(self)
+                msg = widgets.MsgBox(self)
                 msg.setIcon(QMessageBox.Information)
                 msg.setWindowTitle("Succeeded!")
                 msg.setText(f'关于"{keyword}"的信贷报告已经填充完毕!')
                 msg.show()
             except Exception as filler_error:
-                msg = MsgBox(self)
+                msg = widgets.MsgBox(self)
                 msg.setIcon(QMessageBox.Critical)
                 msg.setWindowTitle("Error!")
                 msg.setText("由于DeepSeek服务器解析问题，未能如期提取企业信息: " +
@@ -137,25 +136,25 @@ class MainUI(MouseEvents, QWidget):
                 msg.show()
 
     def on_help(self):
-        msg = MsgBox(self)
+        msg = widgets.MsgBox(self)
         msg.setIcon(QMessageBox.Information)
         msg.setWindowTitle("帮助")
         msg.setText("帮助：将在后续版本解锁！")
         msg.show()
 
     def on_setting(self):
-        msg = MsgBox(self)
+        msg = widgets.MsgBox(self)
         msg.setIcon(QMessageBox.Information)
         msg.setWindowTitle("配置")
         msg.setText("配置：将在后续版本解锁！")
         msg.show()
 
     def close_window(self):
-        FadeAnimations.fade_and_close(
+        controls.FadeAnimations.fade_and_close(
             self, callback=lambda: QApplication.instance().quit())
 
 
-class VerifyProgessBar(MouseEvents, QWidget):
+class VerifyProgessBar(controls.MouseEvents, QWidget):
     """
     验证进度条界面：显示连接至服务器的状态，并执行验证逻辑
     """
@@ -197,7 +196,7 @@ class VerifyProgessBar(MouseEvents, QWidget):
         super().showEvent(event)
         self.raise_()
         self.activateWindow()
-        FadeAnimations.fade_in(self, start=0, end=0.75)
+        controls.FadeAnimations.fade_in(self, start=0, end=0.75)
         QTimer.singleShot(0, self.start_first_animation)
 
     def start_first_animation(self):
@@ -217,14 +216,14 @@ class VerifyProgessBar(MouseEvents, QWidget):
             self.label.move((self.width() - self.label.width()) // 2, 50)
             self.start_second_animation()
         except Exception as e:
-            FadeAnimations.fade_and_close(
+            controls.FadeAnimations.fade_and_close(
                 self, callback=lambda e=str(e): self.verification_failed(e)
             )
 
     def verification_failed(self, error_message):
         if self.welcome_ui:
-            FadeAnimations.fade_and_show(self.welcome_ui)
-            msg = MsgBox(self.welcome_ui)
+            controls.FadeAnimations.fade_and_show(self.welcome_ui)
+            msg = widgets.MsgBox(self.welcome_ui)
             msg.setIcon(QMessageBox.Critical)
             msg.setWindowTitle("Error!")
             msg.setText(error_message)
@@ -242,14 +241,14 @@ class VerifyProgessBar(MouseEvents, QWidget):
         self.second_animation.start()
 
     def open_main_ui(self):
-        FadeAnimations.fade_and_close(self, callback=self.launch_main_ui)
+        controls.FadeAnimations.fade_and_close(self, callback=self.launch_main_ui)
 
     def launch_main_ui(self):
         main_ui = MainUI()
         main_ui.show()
 
 
-class WelcomeUI(MouseEvents, QWidget):
+class WelcomeUI(controls.MouseEvents, QWidget):
     """
     欢迎界面，包含 API KEY 输入和验证逻辑
     """
@@ -279,7 +278,7 @@ class WelcomeUI(MouseEvents, QWidget):
         self.welcome_label.move(
             (self.width() - self.welcome_label.width()) // 2, 50)
 
-        self.exit_button = LiteButton("×", self)
+        self.exit_button = widgets.LiteButton("×", self)
         self.exit_button.setGeometry(350, 10, 30, 25)
         self.exit_button.setStyleSheet("""
             QPushButton {
@@ -292,16 +291,16 @@ class WelcomeUI(MouseEvents, QWidget):
         """)
         self.exit_button.clicked.connect(self.close_window)
 
-        self.api_entry = EntryBox("请输入DeepSeek的API KEY", self)
+        self.api_entry = widgets.EntryBox("请输入DeepSeek的API KEY", self)
         self.api_entry.setGeometry(50, 100, 200, 30)
         api_key = os.getenv("DEEPSEEK_API_KEY", "")
         self.api_entry.setText(api_key)
 
-        self.verify_button = BlueButton("验证", self)
+        self.verify_button = widgets.BlueButton("验证", self)
         self.verify_button.setGeometry(270, 100, 80, 30)
         self.verify_button.clicked.connect(self.show_verifing)
 
-        FadeAnimations.fade_in(self)
+        controls.FadeAnimations.fade_in(self)
 
     def center(self):
         qr = self.frameGeometry()
@@ -312,7 +311,7 @@ class WelcomeUI(MouseEvents, QWidget):
     def show_verifing(self):
         api_key = self.api_entry.text().strip()
         if not api_key:
-            msg = MsgBox(self)
+            msg = widgets.MsgBox(self)
             msg.setIcon(QMessageBox.Critical)
             msg.setWindowTitle("Error!")
             msg.setText("非法的输入内容!")
@@ -328,8 +327,8 @@ class WelcomeUI(MouseEvents, QWidget):
                 self.connect_window = VerifyProgessBar(welcome_ui=self)
                 self.connect_window.show()
 
-            FadeAnimations.fade_and_hide(self, callback=after_fade)
+            controls.FadeAnimations.fade_and_hide(self, callback=after_fade)
 
     def close_window(self):
-        FadeAnimations.fade_and_close(
+        controls.FadeAnimations.fade_and_close(
             self, callback=lambda: QApplication.instance().quit())
