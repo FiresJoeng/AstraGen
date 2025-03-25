@@ -1,4 +1,5 @@
-*.pyc
-cookies.json
+data/
+__pycache__/
+output/
+screenshots/
 .env
-login_page.png
