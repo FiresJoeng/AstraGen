@@ -1,4 +1,4 @@
-# AstraGen
+# <img src="img/icon_black.ico" alt="BFO" width="32" height="32"> AstraGen
 **星核 - 银行信贷报告智能填充助手**  
 Require Python 3.11 or above.
 
