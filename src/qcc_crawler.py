@@ -84,7 +84,7 @@ def create_qcc_agent(keyword: str, agents_context: BrowserContext) -> Agent:
     ]
 
     # 获取最新的 DeepSeek API 客户端
-    DeepSeek_V3, _ = get_deepseek_api_clients()
+    DeepSeek_V3, DeepSeek_R1 = get_deepseek_api_clients()
 
     qcc_agent_prompt = '''
 1. 如需登录，请等待30秒，直到用户完成登录并且网页跳转。否则，请忽略此步骤。
