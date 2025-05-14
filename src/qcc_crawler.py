@@ -10,10 +10,9 @@ from pydantic import SecretStr
 
 def get_deepseek_api_clients():
     load_dotenv(override=True)
-    deepseek_api_key = os.getenv("OPENAI_API_KEY", "")
+    deepseek_api_key = os.getenv("DEEPSEEK_API_KEY", "")
     if not deepseek_api_key:
-        raise ValueError(
-            '[Error] 请先在 ".env" 文件内设置 "OPENAI_API_KEY"（此处输入 DeepSeek 的API）')
+        raise ValueError('[Error] 请先在 ".env" 文件内设置 "DEEPSEEK_API_KEY"')
     DeepSeek_V3 = ChatOpenAI(
         base_url="https://api.deepseek.com/v1",
         model="deepseek-chat",
@@ -145,8 +144,7 @@ def create_json_agent(keyword: str, agents_context: BrowserContext) -> Agent:
     (3) 如果未能抓取到某个键对应的信息，请将该键的值填为 "未知"；
     (4) 对于类似下面这种数组形式的值，可根据实际企业信息添加多个对象，具体视网页提供信息的数量而定；
     (5) 请确保最终生成的 JSON 完全符合参考模板的结构和格式。
-''',
-            "should_strip_link_urls": True
+'''
         }}
     ]
 
