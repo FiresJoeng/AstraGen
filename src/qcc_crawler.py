@@ -8,6 +8,13 @@ from dotenv import load_dotenv
 from pydantic import SecretStr
 
 
+with open('input/mapping.json', 'r', encoding='utf-8') as f:
+    mapping_json = json.load(f)
+
+with open('input/prompts.json', 'r', encoding='utf-8') as f:
+    prompts_json = json.load(f)
+
+
 def get_deepseek_api_clients():
     load_dotenv(override=True)
     deepseek_api_key = os.getenv("DEEPSEEK_API_KEY", "")
@@ -86,10 +93,7 @@ def create_qcc_agent(keyword: str, agents_context: BrowserContext) -> Agent:
     # 获取最新的 DeepSeek API 客户端
     DeepSeek_V3, DeepSeek_R1 = get_deepseek_api_clients()
 
-    qcc_agent_prompt = '''
-1. 如需登录，请等待30秒，直到用户完成登录并且网页跳转。否则，请忽略此步骤。
-2. 请点击第一条搜索结果。
-'''
+    qcc_agent_prompt = prompts_json["prompt-qcc_login"]
 
     # 创建 Agent 实例，使用共享的 BrowserContext
     qcc_agent = Agent(
@@ -127,34 +131,16 @@ def create_json_agent(keyword: str, agents_context: BrowserContext) -> Agent:
             print(error_msg)
             raise
 
-    with open('input/template.json', 'r', encoding='utf-8') as f:
-        json_file = json.load(f)
-
     json_actions = [
         {"extract_content": {
-            "goal":
-            f'''
-请总结页面中该企业的所有信息，整理归纳为以下JSON形式输出。
-    ```
-    {json_file}
-    ```
-详细要求：
-    (1) 参考模板中的所有键值对是你要在网页中获取的信息；
-    (2) 模板中的所有键名及顺序必须严格一致，不能有任何变动；
-    (3) 如果未能抓取到某个键对应的信息，请将该键的值填为 "未知"；
-    (4) 对于类似下面这种数组形式的值，可根据实际企业信息添加多个对象，具体视网页提供信息的数量而定；
-    (5) 请确保最终生成的 JSON 完全符合参考模板的结构和格式。
-'''
+            "goal": prompts_json["prompt-qcc_extractor"].format(mapping=mapping_json)
         }}
     ]
 
     # 获取最新的 DeepSeek API 客户端
     DeepSeek_V3, _ = get_deepseek_api_clients()
 
-    json_agent_prompt = '''
-1. 将整理好的 JSON 数据作为content，通过调用“保存企业信息”函数保存为文件。
-2. 关闭浏览器。
-'''
+    json_agent_prompt = prompts_json["prompt-json_save"]
 
     # 创建 Agent 实例，使用共享的 BrowserContext
     json_agent = Agent(
