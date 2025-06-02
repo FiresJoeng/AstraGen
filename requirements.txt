@@ -5,5 +5,6 @@ playwright
 browser-use==0.1.40
 pydantic
 PyQt5
+dashscope
 # ----------------------------------------------------------------
 # 在安装完毕后，请用终端执行"playwright install"，以完成playwright的安装。
