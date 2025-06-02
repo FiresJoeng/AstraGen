@@ -1,21 +1,48 @@
+# 导入依赖
 from dashscope import MultiModalConversation
 import json
+import os
 
+
+# 读取提示词
 with open('input/prompts.json', 'r', encoding='utf-8') as f:
     prompts_json = json.load(f)
 
-IMAGE = "input/营业执照.png"
-PROMPT = prompts_json["prompt-qwen_extractor"]
-MAPPING = None
+IMAGE_PATH = "input/营业执照.png"
+SYSTEM_PROMPT = prompts_json["system_prompt-qwen_extractor"]
+USER_PROMPT = prompts_json["user_prompt-qwen_extractor"]
 
+
+# 调用模型
 response = MultiModalConversation.call(
-    model="qwen-vl-plus",
+    model="qwen-vl-ocr",
     messages=[
-        {"role": "user", "content": [
-            {"image": IMAGE},
-            {"text": PROMPT}
-        ]}
+        {
+            "role": "system",
+            "content": SYSTEM_PROMPT
+        },
+        {
+            "role": "user",
+            "content": [{"image": IMAGE_PATH}, {"text": USER_PROMPT}]
+        }
     ]
 )
 
-print(response)
+
+# 提取并保存
+try:
+    response_data = json.loads(str(response))
+    extracted_text = response_data["output"]["choices"][0]["message"]["content"][0]["text"]
+
+    base_filename = os.path.splitext(os.path.basename(IMAGE_PATH))[0]
+    output_filename = f"output/{base_filename}.md"
+
+    with open(output_filename, 'w', encoding='utf-8') as outfile:
+        outfile.write(extracted_text)
+
+    print(f"[提示] 已将提取的内容保存至 {output_filename}")
+
+except (json.JSONDecodeError, KeyError, IndexError) as e:
+    print(f"[错误] 提取内容时发生了一个错误: {e}")
+except IOError as e:
+    print(f"[错误] 保存到 {output_filename} 时发生了一个错误: {e}")
