@@ -17,7 +17,7 @@ USER_PROMPT = prompts_json["user_prompt-qwen_extractor"]
 
 # 调用模型
 response = MultiModalConversation.call(
-    model="qwen-vl-ocr",
+    model="qwen-vl-plus",
     messages=[
         {
             "role": "system",
@@ -35,6 +35,8 @@ response = MultiModalConversation.call(
 try:
     response_data = json.loads(str(response))
     extracted_text = response_data["output"]["choices"][0]["message"]["content"][0]["text"]
+    # 移除可能存在的格式标记
+    extracted_text = extracted_text.replace('```json', '').replace('```', '').strip()
 
     base_filename = os.path.splitext(os.path.basename(IMAGE_PATH))[0]
     output_filename = f"output/{base_filename}.json"
