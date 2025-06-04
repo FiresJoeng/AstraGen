@@ -1,8 +1,10 @@
-# 导入依赖
+import dashscope
 from dashscope import MultiModalConversation
 import json
 import os
 
+# 设置API密钥
+dashscope.api_key = 'sk-14331395469f4d7191d881376f77e137'
 
 # 读取提示词
 with open('input/prompts.json', 'r', encoding='utf-8') as f:
@@ -35,7 +37,7 @@ try:
     extracted_text = response_data["output"]["choices"][0]["message"]["content"][0]["text"]
 
     base_filename = os.path.splitext(os.path.basename(IMAGE_PATH))[0]
-    output_filename = f"output/{base_filename}.md"
+    output_filename = f"output/{base_filename}.json"
 
     with open(output_filename, 'w', encoding='utf-8') as outfile:
         outfile.write(extracted_text)
